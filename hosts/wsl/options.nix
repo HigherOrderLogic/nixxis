@@ -5,6 +5,7 @@
       wsl.enable = true;
     };
     programs = {
+      aljd.enable = true;
       fish.enable = true;
       nh.enable = true;
       git = {

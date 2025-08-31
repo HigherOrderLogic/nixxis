@@ -16,6 +16,6 @@ in {
       defaultUser = config.cfg.core.username;
     };
     programs.nix-ld.enable = true;
-    environment.systemPackages = [ pkgs.wget ];
+    environment.systemPackages = [pkgs.wget];
   };
 }
