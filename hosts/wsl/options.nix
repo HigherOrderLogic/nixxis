@@ -6,6 +6,7 @@
     };
     programs = {
       fish.enable = true;
+      nh.enable = true;
       git = {
         enable = true;
         name = "HigherOrderLogic";
