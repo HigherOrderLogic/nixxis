@@ -10,15 +10,11 @@
   outputs = inputs @ {nixpkgs, ...}: let
     mkSystem = hostName:
       nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs hostName;
-        };
-        modules = [
-          ./modules
-          ./hosts/${hostName}
-        ];
+        specialArgs = {inherit inputs hostName;};
+        modules = [./modules ./hosts/${hostName}];
       };
-    hosts = ["wsl"];
+    hostsDir = builtins.readDir ./hosts;
+    hosts = (entries: builtins.filter (entry: hostsDir.${entry} == "directory") (builtins.attrNames entries)) hostsDir;
   in {
     nixosConfigurations = nixpkgs.lib.genAttrs hosts mkSystem;
   };
