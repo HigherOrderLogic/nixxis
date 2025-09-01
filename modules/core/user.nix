@@ -1,9 +1,11 @@
 {
+  inputs,
   lib,
   config,
+  pkgs,
   ...
 }: let
-  inherit (lib) mkOption types;
+  inherit (lib) mkOption types modules;
   inherit (config.cfg.core) username;
 in {
   options.cfg.core.username = mkOption {
@@ -11,15 +13,17 @@ in {
     default = false;
     description = "Set the username for your user.";
   };
+  imports = [inputs.hjem.nixosModules.default (modules.mkAliasOptionModule ["hj"] ["hjem" "users" username])];
   config = {
+    hjem = {
+      linker = pkgs.smfh;
+      clobberByDefault = true;
+      users.${username}.enable = true;
+    };
     users.users.${username} = {
       isNormalUser = true;
       initialPassword = "1234";
-      extraGroups = [
-        "wheel"
-        "video"
-        "input"
-      ];
+      extraGroups = ["wheel" "video" "input"];
       uid = 1000;
     };
   };

@@ -21,20 +21,17 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    environment = {
-      shellAliases = {
-        gaa = "git add --all";
-        gcm = "git commit --message";
-        gca = "git commit --amend";
-      };
-      systemPackages = [pkgs.gh];
+    hj.packages = [pkgs.gh];
+    environment.shellAliases = {
+      gaa = "git add --all";
+      gcm = "git commit --message";
+      gca = "git commit --amend";
+      gpf = "git push --force";
     };
     programs.git = {
       enable = true;
       config = {
-        user = {
-          inherit (cfg) name email;
-        };
+        user = {inherit (cfg) name email;};
         signing.format = "https";
         init.defaultBranch = "main";
         url = {

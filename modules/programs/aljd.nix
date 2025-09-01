@@ -9,16 +9,14 @@
 in {
   options.cfg.programs.aljd.enable = mkEnableOption "aljd";
   config = mkIf cfg.enable {
-    environment = let
+    hj.packages = let
       aljd = pkgs.writeShellApplication {
         name = "aljd";
-
         runtimeInputs = with pkgs; [alejandra fd];
-
         text = ''
           fd "$@" -t f -e nix -x alejandra -q '{}'
         '';
       };
-    in {systemPackages = [aljd];};
+    in [aljd];
   };
 }
