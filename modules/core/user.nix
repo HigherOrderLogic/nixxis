@@ -18,7 +18,10 @@ in {
     hjem = {
       linker = pkgs.smfh;
       clobberByDefault = true;
-      users.${username}.enable = true;
+      users.${username} = {
+        enable = true;
+        packages = with pkgs; [bat eza msedit];
+      };
     };
     users.users.${username} = {
       isNormalUser = true;
