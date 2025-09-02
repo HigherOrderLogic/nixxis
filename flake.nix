@@ -12,13 +12,14 @@
   };
 
   outputs = inputs @ {nixpkgs, ...}: let
+    inherit (nixpkgs) lib;
+
     mkSystem = hostName:
-      nixpkgs.lib.nixosSystem {
+      lib.nixosSystem {
         specialArgs = {inherit inputs hostName;};
         modules = [./modules ./hosts/${hostName}];
       };
-    hostsDir = builtins.readDir ./hosts;
-    hosts = (entries: builtins.filter (entry: hostsDir.${entry} == "directory") (builtins.attrNames entries)) hostsDir;
+    hosts = lib.trivial.pipe (builtins.readDir ./hosts) [(lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
   in {
     nixosConfigurations = nixpkgs.lib.genAttrs hosts mkSystem;
   };
