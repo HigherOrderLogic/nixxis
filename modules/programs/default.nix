@@ -1,3 +1,3 @@
 {
-  imports = [./aljd.nix ./fish.nix ./git.nix ./nh.nix];
+  imports = [./fish.nix ./git.nix ./nh.nix];
 }

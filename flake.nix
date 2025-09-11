@@ -14,13 +14,26 @@
   outputs = inputs @ {nixpkgs, ...}: let
     inherit (nixpkgs) lib;
 
+    forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+    nixpkgsFor = forAllSystems (system: nixpkgs.legacyPackages.${system});
+
     mkSystem = hostName:
       lib.nixosSystem {
         specialArgs = {inherit inputs hostName;};
         modules = [./modules ./hosts/${hostName}];
       };
-    hosts = lib.trivial.pipe (builtins.readDir ./hosts) [(lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
+    hosts = lib.pipe (builtins.readDir ./hosts) [(lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
   in {
+    formatter = forAllSystems (system: let
+      pkgs = nixpkgsFor.${system};
+    in
+      pkgs.writeShellApplication {
+        name = "aljd";
+        runtimeInputs = with pkgs; [alejandra fd];
+        text = ''
+          fd "$@" -t f -e nix -x alejandra -q '{}'
+        '';
+      });
     nixosConfigurations = nixpkgs.lib.genAttrs hosts mkSystem;
   };
 }
