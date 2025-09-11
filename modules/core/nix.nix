@@ -13,16 +13,14 @@ in {
       registry = mapAttrs (_: flake: {inherit flake;}) inputs;
       nixPath = mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
       settings = {
-        experimental-features = [
-          "nix-command"
-          "flakes"
-        ];
+        experimental-features = ["nix-command" "flakes"];
         auto-optimise-store = true;
         allowed-users = ["@wheel"];
         trusted-users = ["@wheel"];
         build-dir = "/var/tmp";
         nix-path = mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
         flake-registry = "";
+        warn-dirty = false;
       };
     };
     nixpkgs.config.allowUnfree = true;
