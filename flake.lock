@@ -1,27 +1,11 @@
 {
   "nodes": {
-    "flake-compat": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1747046372,
-        "narHash": "sha256-CIVLLkVgvHYbgI2UpXvIIBJ12HWgX+fjA8Xf8PUmqCY=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "9100a0f413b0c601e0533d1d94ffd501ce2e7885",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
     "hjem": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
         ],
-        "smfh": "smfh"
+        "smfh": []
       },
       "locked": {
         "lastModified": 1756255328,
@@ -39,7 +23,7 @@
     },
     "nixos-wsl": {
       "inputs": {
-        "flake-compat": "flake-compat",
+        "flake-compat": [],
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -79,66 +63,6 @@
         "hjem": "hjem",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs"
-      }
-    },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": [
-          "hjem",
-          "smfh",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1747622321,
-        "narHash": "sha256-W0dYIWgsUu6rvOJRtKLhKskkv0VhQhJYGNIq+gGUc8g=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "bd030fd9983f7fddf87be1c64aa3064c8afa24c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
-    "smfh": {
-      "inputs": {
-        "nixpkgs": [
-          "hjem",
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay",
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1749906619,
-        "narHash": "sha256-/9Ww10kYopxfCNNnNDwENTubs7Wzqlw+O6PJAHNOYQw=",
-        "owner": "feel-co",
-        "repo": "smfh",
-        "rev": "39f5c06153f63100376bc607b1465850b6df77fd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "feel-co",
-        "repo": "smfh",
-        "type": "github"
-      }
-    },
-    "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
       }
     }
   },

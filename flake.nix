@@ -3,11 +3,17 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable-small";
     hjem = {
       url = "github:feel-co/hjem";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        smfh.follows = "";
+      };
     };
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "";
+      };
     };
   };
 
