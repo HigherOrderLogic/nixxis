@@ -20,6 +20,7 @@ in {
       clobberByDefault = true;
       users.${username} = {
         enable = true;
+        user = username;
         packages = with pkgs; [bat eza msedit];
       };
     };
