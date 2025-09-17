@@ -5,15 +5,13 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkOption types modules;
   inherit (config.cfg.core) username;
 in {
-  options.cfg.core.username = mkOption {
-    type = types.str;
-    default = false;
+  options.cfg.core.username = lib.mkOption {
+    type = lib.types.str;
     description = "Set the username for your user.";
   };
-  imports = [inputs.hjem.nixosModules.default (modules.mkAliasOptionModule ["hj"] ["hjem" "users" username])];
+  imports = [inputs.hjem.nixosModules.default (lib.mkAliasOptionModule ["hj"] ["hjem" "users" username])];
   config = {
     hjem = {
       linker = pkgs.smfh;

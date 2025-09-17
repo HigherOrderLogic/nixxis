@@ -4,23 +4,20 @@
   lib,
   ...
 }: let
-  inherit (lib) mkEnableOption mkOption types mkIf;
   cfg = config.cfg.programs.git;
 in {
   options.cfg.programs.git = {
-    enable = mkEnableOption "git";
-    name = mkOption {
-      type = types.str;
-      default = false;
+    enable = lib.mkEnableOption "git";
+    name = lib.mkOption {
+      type = lib.types.str;
       description = "Set your username for git.";
     };
-    email = mkOption {
-      type = types.str;
-      default = false;
+    email = lib.mkOption {
+      type = lib.types.str;
       description = "Set your email for git.";
     };
   };
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     hj.packages = with pkgs; [gh codeberg-cli];
     environment.shellAliases = {
       gaa = "git add --all";

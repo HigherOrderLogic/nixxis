@@ -5,12 +5,11 @@
   pkgs,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
   cfg = config.cfg.core.wsl;
 in {
-  options.cfg.core.wsl.enable = mkEnableOption "wsl";
+  options.cfg.core.wsl.enable = lib.mkEnableOption "wsl";
   imports = [inputs.nixos-wsl.nixosModules.default];
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     wsl = {
       enable = true;
       defaultUser = config.cfg.core.username;

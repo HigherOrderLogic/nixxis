@@ -1,14 +1,12 @@
 {
   lib,
-  pkgs,
   config,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
   cfg = config.cfg.programs.nh;
 in {
-  options.cfg.programs.nh.enable = mkEnableOption "nh";
-  config = mkIf cfg.enable {
+  options.cfg.programs.nh.enable = lib.mkEnableOption "nh";
+  config = lib.mkIf cfg.enable {
     programs.nh = {
       enable = true;
       clean = {

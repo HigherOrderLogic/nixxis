@@ -4,11 +4,10 @@
   config,
   ...
 }: let
-  inherit (lib) mkEnableOption mkIf;
   cfg = config.cfg.programs.fish;
 in {
-  options.cfg.programs.fish.enable = mkEnableOption "fish";
-  config = mkIf cfg.enable {
+  options.cfg.programs.fish.enable = lib.mkEnableOption "fish";
+  config = lib.mkIf cfg.enable {
     programs.fish = {
       enable = true;
       interactiveShellInit = ''
