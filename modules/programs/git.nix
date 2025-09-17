@@ -21,7 +21,7 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    hj.packages = [pkgs.gh];
+    hj.packages = with pkgs; [gh codeberg-cli];
     environment.shellAliases = {
       gaa = "git add --all";
       gcm = "git commit --message";
