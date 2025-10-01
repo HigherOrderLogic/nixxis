@@ -23,6 +23,8 @@ in {
       gaa = "git add --all";
       gcm = "git commit --message";
       gca = "git commit --amend";
+      gcan = "git commit --amend --no-edit";
+      gp = "git push";
       gpf = "git push --force";
     };
     programs.git = {
