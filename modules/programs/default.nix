@@ -1,3 +1,3 @@
 {
-  imports = [./fish.nix ./git.nix ./nh.nix];
+  imports = [./fish.nix ./git.nix ./helix.nix ./nh.nix];
 }

@@ -20,6 +20,9 @@ in {
         enable = true;
         user = username;
         packages = with pkgs; [bat eza msedit];
+        environment.sessionVariables = {
+          EDITOR = lib.mkDefault "edit";
+        };
       };
     };
     users.users.${username} = {
