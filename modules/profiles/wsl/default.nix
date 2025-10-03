@@ -5,9 +5,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.cfg.core.wsl;
+  cfg = config.cfg.profiles.wsl;
 in {
-  options.cfg.core.wsl.enable = lib.mkEnableOption "wsl";
+  options.cfg.profiles.wsl.enable = lib.mkEnableOption "wsl profile";
   imports = [inputs.nixos-wsl.nixosModules.default];
   config = lib.mkIf cfg.enable {
     wsl = {

@@ -1,9 +1,7 @@
 {
   cfg = {
-    core = {
-      username = "kamn";
-      wsl.enable = true;
-    };
+    core.username = "kamn";
+    profiles.wsl.enable = true;
     programs = {
       fish.enable = true;
       nh.enable = true;
