@@ -3,6 +3,7 @@
   lib,
   config,
   pkgs,
+  hostname,
   ...
 }: let
   cfg = config.cfg.profiles.wsl;
@@ -13,6 +14,7 @@ in {
     wsl = {
       enable = true;
       defaultUser = config.cfg.core.username;
+      wslConf.network = {inherit hostname;};
     };
     programs.nix-ld.enable = true;
     environment.systemPackages = [pkgs.wget];
