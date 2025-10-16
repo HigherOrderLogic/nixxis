@@ -28,7 +28,7 @@
     '';
   };
 
-  configFormat = pkgs.formats.toml {};
+  toml = pkgs.formats.toml {};
 in {
   options.cfg.programs.helix = {
     enable = lib.mkEnableOption "helix";
@@ -36,6 +36,11 @@ in {
       type = lib.types.bool;
       default = false;
       description = "Set Helix as the default editor.";
+    };
+    trueColor = lib.mkOption {
+      type = lib.types.nullOr lib.types.bool;
+      default = null;
+      description = "Override Helix's automatic terminal truecolor support detection.";
     };
     languages = {
       nix.enable = mkEnableTrueOption "nix";
@@ -55,29 +60,31 @@ in {
         EDITOR = lib.mkIf cfg.defaultEditor (lib.mkForce "hx");
       };
       xdg.config.files = {
-        "helix/config.toml".source = configFormat.generate "helix-config" {
-          editor = {
-            line-number = "relative";
-            soft-wrap.enable = true;
-            cursor-shape = {
-              insert = "bar";
-              select = "bar";
-            };
-            completion-timeout = 5;
-            completion-replace = true;
-            lsp.display-inlay-hints = true;
-            end-of-line-diagnostics = "hint";
-            inline-diagnostics.cursor-line = "hint";
-            indent-guides = {
-              render = true;
-              character = "╎";
-            };
-            statusline = {
-              left = ["mode" "spinner"];
-              center = ["file-name" "read-only-indicator" "file-modification-indicator"];
-              right = ["diagnostics" "version-control" "register" "file-encoding" "position"];
-            };
-          };
+        "helix/config.toml".source = toml.generate "helix-config.toml" {
+          editor =
+            {
+              line-number = "relative";
+              soft-wrap.enable = true;
+              cursor-shape = {
+                insert = "bar";
+                select = "bar";
+              };
+              completion-timeout = 5;
+              completion-replace = true;
+              lsp.display-inlay-hints = true;
+              end-of-line-diagnostics = "hint";
+              inline-diagnostics.cursor-line = "hint";
+              indent-guides = {
+                render = true;
+                character = "╎";
+              };
+              statusline = {
+                left = ["mode" "spinner"];
+                center = ["file-name" "read-only-indicator" "file-modification-indicator"];
+                right = ["diagnostics" "version-control" "register" "file-encoding" "position"];
+              };
+            }
+            // lib.optionalAttrs (cfg.trueColor != null) {true-color = cfg.trueColor;};
           keys = {
             insert = {
               C-left = "move_prev_word_start";
@@ -95,8 +102,8 @@ in {
             };
           };
         };
-        "helix/languages.toml".source = configFormat.generate "helix-languages-config" {
           language =
+        "helix/languages.toml".source = toml.generate "helix-languages-config.toml" {
             (lib.optional cfg.languages.nix.enable {
               name = "nix";
               language-servers = ["nixd"];

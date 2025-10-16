@@ -12,6 +12,7 @@
       helix = {
         enable = true;
         defaultEditor = true;
+        trueColor = true;
       };
       nh.enable = true;
     };
