@@ -6,6 +6,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         smfh.follows = "";
+        ndg.follows = "";
       };
     };
     nixos-wsl = {
