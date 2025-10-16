@@ -13,7 +13,6 @@
         auto-optimise-store = true;
         allowed-users = ["@wheel"];
         trusted-users = ["@wheel"];
-        build-dir = "/var/tmp";
         nix-path = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
         flake-registry = "";
         warn-dirty = false;
