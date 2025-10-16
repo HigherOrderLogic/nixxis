@@ -33,11 +33,6 @@ in {
         user = {inherit (cfg) name email;};
         signing.format = "https";
         init.defaultBranch = "main";
-        # TODO: remove once hjem's sessionVariables works
-        core.editor =
-          if config.cfg.programs.helix.enable
-          then "hx"
-          else "edit";
         url = {
           "https://github.com/".insteadOf = ["gh:" "github:"];
           "https://codeberg.org/".insteadOf = ["cb:" "codeberg:"];

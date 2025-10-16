@@ -10,14 +10,32 @@ in {
   config = lib.mkIf cfg.enable {
     programs.fish = {
       enable = true;
-      interactiveShellInit = ''
+      loginShellInit = ''
+        switch $USER
+          ${lib.concatMapAttrsStringSep
+          "\n"
+          (u: c: ''
+            case ${u}
+              ${lib.concatMapAttrsStringSep
+              "\n"
+              (name: value: "set -gx ${name} '${lib.escapeShellArg value}'")
+              c.environment.sessionVariables}
+          '')
+          config.hjem.users}
+          case '*'
+            echo "Unknown user $USER."
+        end
+      '';
+    };
+    users.users.${config.cfg.core.username}.shell = pkgs.fish;
+    hj.xdg.config.files."fish/config.fish".text = ''
+      if status is-interactive
         bind up history-prefix-search-backward
         bind down history-prefix-search-forward
         bind shift-up history-search-backward
         bind shift-down history-search-forward
-      '';
-    };
-    users.users.${config.cfg.core.username}.shell = pkgs.fish;
+      end
+    '';
     environment.systemPackages = [pkgs.fishPlugins.hydro];
   };
 }
