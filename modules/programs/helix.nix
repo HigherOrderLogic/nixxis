@@ -18,6 +18,7 @@
           (lib.optional cfg.languages.nix.enable pkgs.nixd)
           (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy]))
           (lib.optionals cfg.languages.python.enable (with pkgs; [basedpyright ruff]))
+          (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
           (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
           (lib.optional cfg.languages.yaml.enable pkgs.yaml-language-server)
           (lib.optional cfg.integrations.gitui.enable pkgs.gitui)
@@ -44,6 +45,7 @@ in {
       nix.enable = lib'.mkEnableTrueOption "nix";
       rust.enable = lib'.mkEnableTrueOption "rust";
       python.enable = lib'.mkEnableTrueOption "python";
+      java.enable = lib'.mkEnableTrueOption "java";
       markdown.enable = lib'.mkEnableTrueOption "markdown";
       yaml.enable = lib'.mkEnableTrueOption "yaml";
     };
@@ -113,6 +115,10 @@ in {
             (lib.optional cfg.languages.python.enable {
               name = "python";
               language-servers = ["basedpyright" "ruff"];
+            })
+            (lib.optional cfg.languages.java.enable {
+              name = "java";
+              language-servers = ["jdtls"];
             })
             (lib.optional cfg.languages.markdown.enable {
               name = "markdown";
