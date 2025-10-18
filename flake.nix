@@ -21,19 +21,11 @@
   outputs = inputs @ {nixpkgs, ...}: let
     inherit (nixpkgs) lib;
 
-    forAllSystems = lib.genAttrs lib.systems.flakeExposed;
-    nixpkgsFor = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    forAllSystems = fn: lib.genAttrs lib.systems.flakeExposed (system: fn system nixpkgs.legacyPackages.${system});
 
-    mkSystem = hostName:
-      lib.nixosSystem {
-        specialArgs = {inherit inputs hostName;};
-        modules = [./modules ./hosts/${hostName}];
-      };
-    hosts = lib.pipe (builtins.readDir ./hosts) [(lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
+    hosts = lib.pipe ./hosts [builtins.readDir (lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
   in {
-    formatter = forAllSystems (system: let
-      pkgs = nixpkgsFor.${system};
-    in
+    formatter = forAllSystems (system: pkgs:
       pkgs.writeShellApplication {
         name = "aljd";
         runtimeInputs = with pkgs; [alejandra fd];
@@ -41,6 +33,13 @@
           fd "$@" -t f -e nix -x alejandra -q '{}'
         '';
       });
-    nixosConfigurations = nixpkgs.lib.genAttrs hosts mkSystem;
+
+    nixosConfigurations = lib.genAttrs hosts (hostname: let
+      lib' = import ./lib {inherit lib;};
+    in
+      lib.nixosSystem {
+        specialArgs = {inherit inputs lib' hostname;};
+        modules = [./hosts/${hostname} ./modules];
+      });
   };
 }
