@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   lib',
   pkgs,
@@ -7,11 +8,11 @@
 }: let
   cfg = config.cfg.programs.helix;
 
-  inherit (pkgs) helix;
+  inherit (inputs.helix.packages.${pkgs.system}) helix;
   helixWrapped = pkgs.symlinkJoin {
-    name = "${lib.getName helix}-wrapped-${lib.getVersion helix}";
+    name = "${lib.getName helix}-wrapped";
     paths = [helix];
-    nativeBuildInputs = [pkgs.makeWrapper];
+    nativeBuildInputs = [pkgs.makeBinaryWrapper];
     postBuild = ''
       wrapProgram $out/bin/hx --prefix PATH : ${lib.makeBinPath (
         builtins.concatLists [
@@ -65,6 +66,7 @@ in {
             {
               line-number = "relative";
               soft-wrap.enable = true;
+              rainbow-brackets = true;
               cursor-shape = {
                 insert = "bar";
                 select = "bar";
