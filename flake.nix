@@ -34,7 +34,7 @@
         name = "aljd";
         runtimeInputs = with pkgs; [alejandra fd];
         text = ''
-          fd "$@" -t f -e nix -x alejandra -q '{}'
+          fd "$@" -t f -e nix -X alejandra -q '{}'
         '';
       });
 
