@@ -25,7 +25,7 @@ in {
       gca = "git commit --amend";
       gcan = "git commit --amend --no-edit";
       gp = "git push";
-      gpf = "git push --force";
+      gpf = "git push --force-with-lease";
     };
     programs.git = {
       enable = true;
