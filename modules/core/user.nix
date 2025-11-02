@@ -14,7 +14,7 @@ in {
   imports = [inputs.hjem.nixosModules.default (lib.mkAliasOptionModule ["hj"] ["hjem" "users" username])];
   config = {
     hjem = {
-      linker = pkgs.smfh;
+      linker = inputs.hjem.packages.${pkgs.stdenv.hostPlatform.system}.smfh;
       clobberByDefault = true;
       users.${username} = {
         enable = true;

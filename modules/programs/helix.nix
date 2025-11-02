@@ -8,7 +8,7 @@
 }: let
   cfg = config.cfg.programs.helix;
 
-  inherit (inputs.helix.packages.${pkgs.system}) helix;
+  inherit (inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}) helix;
   helixWrapped = pkgs.symlinkJoin {
     name = "${lib.getName helix}-wrapped";
     paths = [helix];

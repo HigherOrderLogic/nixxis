@@ -5,7 +5,6 @@
       url = "github:feel-co/hjem";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        smfh.follows = "";
         ndg.follows = "";
       };
     };
