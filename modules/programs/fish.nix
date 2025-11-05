@@ -28,14 +28,23 @@ in {
       '';
     };
     users.users.${config.cfg.core.username}.shell = pkgs.fish;
-    hj.xdg.config.files."fish/config.fish".text = ''
-      if status is-interactive
-        bind up history-prefix-search-backward
-        bind down history-prefix-search-forward
-        bind shift-up history-search-backward
-        bind shift-down history-search-forward
-      end
-    '';
+    hj.xdg.config.files = {
+      "fish/conf.d/binds.fish".text = ''
+        if status is-interactive
+          bind up history-prefix-search-backward
+          bind down history-prefix-search-forward
+          bind shift-up history-search-backward
+          bind shift-down history-search-forward
+        end
+      '';
+      "fish/conf.d/aliases.fish" = lib.mkIf (config.hjem.users.${config.cfg.core.username}.environment.shellAliases != {}) {
+        text =
+          lib.concatMapAttrsStringSep
+          "\n"
+          (name: val: "alias -- ${name} ${lib.escapeShellArg (builtins.toString val)}")
+          config.hjem.users.${config.cfg.core.username}.environment.shellAliases;
+      };
+    };
     environment.systemPackages = [pkgs.fishPlugins.hydro];
   };
 }
