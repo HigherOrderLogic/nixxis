@@ -8,6 +8,7 @@
 in {
   options.cfg.programs.fish.enable = lib.mkEnableOption "fish";
   config = lib.mkIf cfg.enable {
+    documentation.man.generateCaches = false;
     programs.fish = {
       enable = true;
       loginShellInit = ''
