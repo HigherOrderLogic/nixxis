@@ -3,10 +3,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable-small";
     hjem = {
       url = "github:feel-co/hjem";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        ndg.follows = "";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
