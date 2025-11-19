@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  lib',
   ...
 }: let
   cfg = config.cfg.programs.git;
@@ -18,19 +19,32 @@ in {
       type = lib.types.str;
       description = "Set your email for git.";
     };
+    integrations = {
+      difftastic.enable = lib'.mkEnableTrueOption "difftastic integration";
+    };
   };
   config = lib.mkIf cfg.enable {
     hj = {
       packages = with pkgs; [git gh codeberg-cli];
-      xdg.config.files."git/config".source = gitIni.generate "git-config" {
-        user = {inherit (cfg) name email;};
-        signing.format = "https";
-        init.defaultBranch = "main";
-        url = {
-          "https://github.com/".insteadOf = ["gh:" "github:"];
-          "https://codeberg.org/".insteadOf = ["cb:" "codeberg:"];
-        };
-      };
+      xdg.config.files."git/config".source = gitIni.generate "git-config" ({
+          user = {inherit (cfg) name email;};
+          signing.format = "https";
+          init.defaultBranch = "main";
+          url = {
+            "https://github.com/".insteadOf = ["gh:" "github:"];
+            "https://codeberg.org/".insteadOf = ["cb:" "codeberg:"];
+          };
+        }
+        // (let
+          difftasticCmd = "${lib.getExe pkgs.difftastic} --display side-by-side";
+        in
+          lib.optionalAttrs (cfg.integrations.difftastic.enable) {
+            diff = {
+              tool = "difftastic";
+              external = difftasticCmd;
+            };
+            difftool.difftastic.cmd = "${difftasticCmd} $LOCAL $REMOTE";
+          }));
       environment.shellAliases = {
         gaa = "git add --all";
         gcm = "git commit --message";
