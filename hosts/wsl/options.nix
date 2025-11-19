@@ -13,6 +13,7 @@
         enable = true;
         defaultEditor = true;
         trueColor = true;
+        languages.java.enable = false;
       };
       nh.enable = true;
     };
