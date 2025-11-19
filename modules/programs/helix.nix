@@ -16,8 +16,8 @@
     postBuild = ''
       wrapProgram $out/bin/hx --prefix PATH : ${lib.makeBinPath (
         builtins.concatLists [
-          (lib.optional cfg.languages.nix.enable pkgs.nixd)
-          (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy]))
+          (lib.optionals cfg.languages.nix.enable (with pkgs; [nil nixd]))
+          (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy crates-lsp]))
           (lib.optionals cfg.languages.python.enable (with pkgs; [basedpyright ruff]))
           (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
           (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
@@ -108,12 +108,18 @@ in {
           language = builtins.concatLists [
             (lib.optional cfg.languages.nix.enable {
               name = "nix";
-              language-servers = ["nixd"];
+              language-servers = ["nil" "nixd"];
             })
-            (lib.optional cfg.languages.rust.enable {
-              name = "rust";
-              language-servers = ["rust-analyzer"];
-            })
+            (lib.optionals cfg.languages.rust.enable [
+              {
+                name = "rust";
+                language-servers = ["rust-analyzer"];
+              }
+              {
+                name = "toml";
+                language-servers = ["crates-lsp"];
+              }
+            ])
             (lib.optional cfg.languages.python.enable {
               name = "python";
               language-servers = ["basedpyright" "ruff"];
@@ -131,6 +137,12 @@ in {
               language-servers = ["yaml-language-server"];
             })
           ];
+          language-server = {
+            crates-lsp = lib.optionalAttrs cfg.languages.rust.enable {
+              command = "crates-lsp";
+              except-features = ["format"];
+            };
+          };
         };
       };
     };
