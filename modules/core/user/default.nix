@@ -15,7 +15,7 @@ in {
   config = {
     hjem = {
       extraModules = [./hjemModules];
-      linker = inputs.hjem.packages.${pkgs.stdenv.hostPlatform.system}.smfh;
+      linker = pkgs.smfh;
       clobberByDefault = true;
       users.${username} = {
         enable = true;
