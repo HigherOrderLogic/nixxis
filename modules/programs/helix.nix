@@ -18,6 +18,9 @@
         builtins.concatLists [
           (lib.optionals cfg.languages.nix.enable (with pkgs; [nil nixd]))
           (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy crates-lsp]))
+          (lib.optional cfg.languages.cpp.enable (pkgs.writeShellScriptBin "clangd" ''
+            ${lib.getExe' pkgs.clang-tools "clangd"} "$@"
+          ''))
           (lib.optionals cfg.languages.python.enable (with pkgs; [basedpyright ruff]))
           (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
           (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
@@ -45,6 +48,7 @@ in {
     languages = {
       nix.enable = lib'.mkEnableTrueOption "nix";
       rust.enable = lib'.mkEnableTrueOption "rust";
+      cpp.enable = lib'.mkEnableTrueOption "cpp";
       python.enable = lib'.mkEnableTrueOption "python";
       java.enable = lib'.mkEnableTrueOption "java";
       markdown.enable = lib'.mkEnableTrueOption "markdown";
@@ -120,6 +124,10 @@ in {
                 language-servers = ["crates-lsp"];
               }
             ])
+            (lib.optional cfg.languages.cpp.enable {
+              name = "cpp";
+              language-servers = ["clangd"];
+            })
             (lib.optional cfg.languages.python.enable {
               name = "python";
               language-servers = ["basedpyright" "ruff"];
