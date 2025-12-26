@@ -25,7 +25,6 @@
           (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
           (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
           (lib.optional cfg.languages.yaml.enable pkgs.yaml-language-server)
-          (lib.optional cfg.integrations.gitui.enable pkgs.gitui)
         ]
       )}
     '';
@@ -56,6 +55,7 @@ in {
     };
     integrations = {
       gitui.enable = lib'.mkEnableTrueOption "gitui";
+      lazyjj.enable = lib'.mkEnableTrueOption "lazyjj";
     };
   };
   config = lib.mkIf cfg.enable {
@@ -100,7 +100,15 @@ in {
               C-g = lib.optionals cfg.integrations.gitui.enable [
                 ":write-all"
                 ":new"
-                ":insert-output gitui >/dev/tty"
+                ":insert-output ${lib.getExe pkgs.gitui} >/dev/tty"
+                ":buffer-close!"
+                ":redraw"
+                ":reload-all"
+              ];
+              C-j = lib.optionals cfg.integrations.lazyjj.enable [
+                ":write-all"
+                ":new"
+                ":insert-output ${lib.getExe pkgs.lazyjj} >/dev/tty"
                 ":buffer-close!"
                 ":redraw"
                 ":reload-all"
