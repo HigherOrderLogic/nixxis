@@ -36,9 +36,9 @@ in {
           };
         }
         // (let
-          difftasticCmd = "${lib.getExe pkgs.difftastic} --display side-by-side";
+          difftasticCmd = "${lib.getExe pkgs.difftastic} --display=side-by-side";
         in
-          lib.optionalAttrs (cfg.integrations.difftastic.enable) {
+          lib.optionalAttrs cfg.integrations.difftastic.enable {
             diff = {
               tool = "difftastic";
               external = difftasticCmd;
