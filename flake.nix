@@ -9,6 +9,10 @@
         smfh.follows = "";
       };
     };
+    nix-index-db = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
       inputs = {
@@ -22,7 +26,11 @@
     };
   };
 
-  outputs = inputs @ {nixpkgs, ...}: let
+  outputs = inputs @ {
+    nixpkgs,
+    nix-index-db,
+    ...
+  }: let
     inherit (nixpkgs) lib;
 
     forAllSystems = fn: lib.genAttrs lib.systems.flakeExposed (system: fn system nixpkgs.legacyPackages.${system});
@@ -43,7 +51,7 @@
     in
       lib.nixosSystem {
         specialArgs = {inherit inputs lib' hostname;};
-        modules = [./hosts/${hostname} ./modules];
+        modules = [./hosts/${hostname} ./modules nix-index-db.nixosModules.default];
       });
   };
 }
