@@ -21,6 +21,6 @@ in {
       wslConf.network = {inherit hostname;};
     };
     programs.nix-ld = {inherit (cfg.vsCodeIntegration) enable;};
-    environment.systemPackages = [pkgs.wget];
+    environment.systemPackages = lib.optional cfg.vsCodeIntegration.enable pkgs.wget;
   };
 }
