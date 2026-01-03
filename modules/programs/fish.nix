@@ -11,6 +11,7 @@ in {
     documentation.man.generateCaches = false;
     programs.fish = {
       enable = true;
+      useBabelfish = true;
       loginShellInit = ''
         switch $USER
           ${lib.concatMapAttrsStringSep
@@ -42,10 +43,10 @@ in {
         text =
           lib.concatMapAttrsStringSep
           "\n"
-          (name: val: "alias -- ${name} ${lib.escapeShellArg (builtins.toString val)}")
+          (name: val: "alias -- ${name} ${lib.escapeShellArg (toString val)}")
           config.hjem.users.${config.cfg.core.username}.environment.shellAliases;
       };
     };
-    environment.systemPackages = [pkgs.fishPlugins.hydro];
+    environment.systemPackages = with pkgs.fishPlugins; [hydro pisces colored-man-pages];
   };
 }
