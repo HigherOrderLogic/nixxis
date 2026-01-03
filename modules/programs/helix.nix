@@ -55,7 +55,7 @@ in {
     };
     integrations = {
       gitui.enable = lib'.mkEnableTrueOption "gitui";
-      lazyjj.enable = lib'.mkEnableTrueOption "lazyjj";
+      jjui.enable = lib'.mkEnableTrueOption "jjui";
     };
   };
   config = lib.mkIf cfg.enable {
@@ -105,10 +105,10 @@ in {
                 ":redraw"
                 ":reload-all"
               ];
-              C-j = lib.optionals cfg.integrations.lazyjj.enable [
+              C-j = lib.optionals cfg.integrations.jjui.enable [
                 ":write-all"
                 ":new"
-                ":insert-output ${lib.getExe pkgs.lazyjj} >/dev/tty"
+                ":insert-output ${lib.getExe pkgs.jjui} >/dev/tty"
                 ":buffer-close!"
                 ":redraw"
                 ":reload-all"
