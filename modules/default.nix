@@ -1,3 +1,3 @@
 {
-  imports = [./core ./profiles ./programs];
+  imports = [./core ./profiles ./programs ./services];
 }
