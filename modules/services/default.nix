@@ -1,3 +1,3 @@
 {
-  imports = [./pipewire.nix];
+  imports = [./pipewire.nix ./scx.nix];
 }
