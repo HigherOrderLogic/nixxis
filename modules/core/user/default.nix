@@ -20,7 +20,10 @@ in {
       users.${username} = {
         enable = true;
         user = username;
-        packages = (with pkgs; [bat eza msedit]) ++ [inputs.nix-index-db.packages.${pkgs.stdenv.hostPlatform.system}.comma-with-db];
+        packages = builtins.attrValues {
+          inherit (pkgs) bat eza msedit;
+          inherit (inputs.nix-index-db.packages.${pkgs.stdenv.hostPlatform.system}) comma-with-db;
+        };
         environment.sessionVariables = {
           EDITOR = lib.mkDefault "edit";
         };
