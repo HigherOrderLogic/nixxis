@@ -50,6 +50,9 @@ in {
         gcm = "git commit --message";
         gca = "git commit --amend";
         gcan = "git commit --amend --no-edit";
+        grb = "git rebase";
+        grbi = "git rebase -i";
+        grbc = "git rebase --continue";
         gp = "git push";
         gpf = "git push --force-with-lease";
       };
