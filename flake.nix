@@ -25,6 +25,10 @@
       url = "github:helix-editor/helix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tuigreet = {
+      url = "github:notashelf/tuigreet";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
