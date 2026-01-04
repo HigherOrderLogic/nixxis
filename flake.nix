@@ -9,6 +9,7 @@
         smfh.follows = "";
       };
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     nix-index-db = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +29,7 @@
 
   outputs = inputs @ {
     nixpkgs,
+    nix-flatpak,
     nix-index-db,
     ...
   }: let
@@ -51,7 +53,7 @@
     in
       lib.nixosSystem {
         specialArgs = {inherit inputs lib' hostname;};
-        modules = [./hosts/${hostname} ./modules nix-index-db.nixosModules.default];
+        modules = [./hosts/${hostname} ./modules nix-flatpak.nixosModules.nix-flatpak nix-index-db.nixosModules.default];
       });
   };
 }

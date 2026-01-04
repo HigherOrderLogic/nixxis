@@ -1,3 +1,3 @@
 {
-  imports = [./pipewire.nix ./scx.nix];
+  imports = [./flatpak.nix ./pipewire.nix ./scx.nix];
 }
