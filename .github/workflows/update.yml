@@ -1,0 +1,41 @@
+name: Update lockfiles
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 6"
+
+jobs:
+  update-flake-lock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Update lock
+        id: nix-update
+        run: |
+          echo "changes<<EOF" >> $GITHUB_OUTPUT
+          nix flake update &>> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get date
+        id: get-date
+        run: |
+          echo "date=$(date -I)" >> $GITHUB_OUTPUT
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: |
+            chore: update `flake.lock` (${{ steps.get-date.outputs.date }})
+
+            ${{ steps.nix-update.outputs.changes }}
+          title: "chore: update `flake.lock`"
+          branch: workflow/update-flake-lock
