@@ -4,7 +4,10 @@ let
 in {
   cfg = {
     core.username = "kamn";
-    profiles.wsl.enable = true;
+    profiles.wsl = {
+      enable = true;
+      vsCodeIntegration.enable = false;
+    };
     programs = {
       fish.enable = true;
       git = {
