@@ -13,7 +13,10 @@
     desktops.plasma6.enable = true;
     programs = {
       fish.enable = true;
-      foot.enable = true;
+      foot = {
+        enable = true;
+        defaultTerminal = true;
+      };
       git = {
         enable = true;
         name = "HigherOrderLogic";
