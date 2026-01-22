@@ -20,6 +20,7 @@ in {
         defaultEditor = true;
         trueColor = true;
         languages.java.enable = false;
+        extraConfig.theme = "ayu_mirage";
       };
       jj = {
         enable = true;
