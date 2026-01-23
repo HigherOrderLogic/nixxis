@@ -9,6 +9,7 @@
         enable = true;
         stevenblack.enable = true;
       };
+      zram.enable = true;
     };
     desktops.plasma6.enable = true;
     programs = {
