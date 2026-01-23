@@ -42,10 +42,12 @@ in {
     };
     services.resolved = {
       enable = true;
-      dnssec = "true";
-      dnsovertls = "true";
-      domains = ["~."];
-      fallbackDns = nameservers;
+      settings.Resolve = {
+        DNSSEC = "true";
+        DNSOverTLS = "true";
+        Domains = ["~."];
+        FallbackDNS = nameservers;
+      };
     };
     users.users.${config.cfg.core.username} = {extraGroups = ["networkmanager"];};
   };
