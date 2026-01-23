@@ -17,7 +17,7 @@
       wrapProgram $out/bin/hx --prefix PATH : ${lib.makeBinPath (
         builtins.concatLists [
           (lib.optionals cfg.languages.nix.enable (with pkgs; [nil nixd]))
-          (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy crates-lsp]))
+          (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy]))
           (lib.optional cfg.languages.cpp.enable (pkgs.writeShellScriptBin "clangd" ''
             ${lib.getExe' pkgs.clang-tools "clangd"} "$@"
           ''))
@@ -128,16 +128,13 @@ in {
               name = "nix";
               language-servers = ["nil" "nixd"];
             })
-            (lib.optionals cfg.languages.rust.enable [
+            (
+              lib.optional cfg.languages.rust.enable
               {
                 name = "rust";
                 language-servers = ["rust-analyzer"];
               }
-              {
-                name = "toml";
-                language-servers = ["crates-lsp"];
-              }
-            ])
+            )
             (lib.optional cfg.languages.cpp.enable {
               name = "cpp";
               language-servers = ["clangd"];
@@ -159,12 +156,6 @@ in {
               language-servers = ["yaml-language-server"];
             })
           ];
-          language-server = {
-            crates-lsp = lib.optionalAttrs cfg.languages.rust.enable {
-              command = "crates-lsp";
-              except-features = ["format"];
-            };
-          };
         };
       };
     };
