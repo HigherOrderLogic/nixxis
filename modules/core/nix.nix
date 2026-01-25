@@ -1,13 +1,22 @@
 {
   inputs,
   lib,
+  config,
   ...
 }: {
   config = {
     nix = {
       channel.enable = false;
-      registry = builtins.mapAttrs (_: flake: {inherit flake;}) inputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
+      registry =
+        {
+          hulse.to = {
+            type = "github";
+            owner = "higherorderlogic";
+            repo = "hulse";
+          };
+        }
+        // builtins.mapAttrs (_: flake: {inherit flake;}) inputs;
+      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") config.nix.registry;
       settings = {
         experimental-features = ["nix-command" "flakes"];
         auto-optimise-store = true;
