@@ -33,9 +33,11 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v8
         with:
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           commit-message: |
             chore: update `flake.lock` (${{ steps.get-date.outputs.date }})
 
             ${{ steps.nix-update.outputs.changes }}
           title: "chore: update `flake.lock`"
+          body: Automatic `flake.lock` update.
           branch: workflow/update-flake-lock
