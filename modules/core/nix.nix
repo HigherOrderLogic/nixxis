@@ -3,9 +3,12 @@
   lib,
   config,
   ...
-}: {
+}: let
+  nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") config.nix.registry;
+in {
   config = {
     nix = {
+      inherit nixPath;
       channel.enable = false;
       registry =
         {
@@ -16,13 +19,12 @@
           };
         }
         // builtins.mapAttrs (_: flake: {inherit flake;}) inputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") config.nix.registry;
       settings = {
         experimental-features = ["nix-command" "flakes"];
         auto-optimise-store = true;
         allowed-users = ["@wheel"];
         trusted-users = ["@wheel"];
-        nix-path = lib.mapAttrsToList (n: _: "${n}=flake:${n}") inputs;
+        nix-path = nixPath;
         flake-registry = "";
         warn-dirty = false;
       };
