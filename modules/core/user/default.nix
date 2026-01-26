@@ -13,6 +13,7 @@ in {
   };
   imports = [inputs.hjem.nixosModules.default (lib.mkAliasOptionModule ["hj"] ["hjem" "users" username])];
   config = {
+    programs.less.enable = lib.mkForce false;
     hjem = {
       extraModules = [./hjemModules];
       linker = pkgs.smfh;
@@ -26,6 +27,7 @@ in {
         };
         environment.sessionVariables = {
           EDITOR = lib.mkDefault "edit";
+          PAGER = "bat";
         };
       };
     };
