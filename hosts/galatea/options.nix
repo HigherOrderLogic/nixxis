@@ -31,6 +31,7 @@
       nh.enable = true;
     };
     services = {
+      fcitx5.enable = true;
       flatpak = {
         enable = true;
         packages = ["one.ablaze.floorp"];
