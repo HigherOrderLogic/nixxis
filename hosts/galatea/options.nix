@@ -12,6 +12,7 @@
       zram.enable = true;
     };
     desktops.plasma6.enable = true;
+    hardware.bluetooth.enable = true;
     programs = {
       fish.enable = true;
       foot.enable = true;
