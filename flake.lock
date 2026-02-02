@@ -43,6 +43,28 @@
         "type": "github"
       }
     },
+    "nbi": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-stable": [],
+        "nixpkgs-unstable": []
+      },
+      "locked": {
+        "lastModified": 1769997527,
+        "narHash": "sha256-clt2UWnx0VYlUydSl5S6cezjxa/aW21sMHVTheKzonY=",
+        "owner": "highorderlogic",
+        "repo": "nbi",
+        "rev": "5327d6a87f786f7a5573bc729b6e8e724513413f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "highorderlogic",
+        "repo": "nbi",
+        "type": "github"
+      }
+    },
     "nix-flatpak": {
       "locked": {
         "lastModified": 1754777568,
@@ -55,26 +77,6 @@
       "original": {
         "owner": "gmodena",
         "repo": "nix-flatpak",
-        "type": "github"
-      }
-    },
-    "nix-index-db": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1765267181,
-        "narHash": "sha256-d3NBA9zEtBu2JFMnTBqWj7Tmi7R5OikoU2ycrdhQEws=",
-        "owner": "nix-community",
-        "repo": "nix-index-database",
-        "rev": "82befcf7dc77c909b0f2a09f5da910ec95c5b78f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nix-index-database",
         "type": "github"
       }
     },
@@ -119,8 +121,8 @@
       "inputs": {
         "helix": "helix",
         "hjem": "hjem",
+        "nbi": "nbi",
         "nix-flatpak": "nix-flatpak",
-        "nix-index-db": "nix-index-db",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "tuigreet": "tuigreet"

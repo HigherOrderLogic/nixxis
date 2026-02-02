@@ -6,6 +6,18 @@
   ...
 }: let
   inherit (config.cfg.core) username;
+
+  inherit (pkgs) comma;
+  commaWrapped = pkgs.symlinkJoin {
+    name = "${lib.getName comma}-wrapped";
+    paths = [comma];
+    nativeBuildInputs = [pkgs.makeBinaryWrapper];
+    postBuild = ''
+      for cmd in "," "comma"; do
+        wrapProgram "$out/bin/$cmd" --set NIX_INDEX_DATABASE ${inputs.nbi.packages.${pkgs.stdenv.hostPlatform.system}.unstable}
+      done
+    '';
+  };
 in {
   options.cfg.core.username = lib.mkOption {
     type = lib.types.str;
@@ -22,8 +34,8 @@ in {
         enable = true;
         user = username;
         packages = builtins.attrValues {
+          inherit commaWrapped;
           inherit (pkgs) bat eza msedit;
-          inherit (inputs.nix-index-db.packages.${pkgs.stdenv.hostPlatform.system}) comma-with-db;
         };
         environment.sessionVariables = {
           EDITOR = lib.mkDefault "edit";

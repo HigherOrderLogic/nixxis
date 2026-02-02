@@ -10,9 +10,13 @@
       };
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
-    nix-index-db = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nbi = {
+      url = "github:highorderlogic/nbi";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "";
+        nixpkgs-unstable.follows = "";
+      };
     };
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
@@ -34,7 +38,6 @@
   outputs = inputs @ {
     nixpkgs,
     nix-flatpak,
-    nix-index-db,
     ...
   }: let
     inherit (nixpkgs) lib;
@@ -57,7 +60,7 @@
     in
       lib.nixosSystem {
         specialArgs = {inherit inputs lib' hostname;};
-        modules = [./hosts/${hostname} ./modules nix-flatpak.nixosModules.nix-flatpak nix-index-db.nixosModules.default];
+        modules = [./hosts/${hostname} ./modules nix-flatpak.nixosModules.nix-flatpak];
       });
   };
 }
