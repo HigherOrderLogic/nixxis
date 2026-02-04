@@ -22,6 +22,7 @@ in {
       settings = {
         experimental-features = ["nix-command" "flakes"];
         auto-optimise-store = true;
+        accept-flake-config = true;
         allowed-users = ["@wheel"];
         trusted-users = ["@wheel"];
         nix-path = nixPath;
