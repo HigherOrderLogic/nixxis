@@ -22,7 +22,7 @@ jobs:
         id: nix-update
         run: |
           echo "changes<<EOF" >> $GITHUB_OUTPUT
-          nix flake update &>> $GITHUB_OUTPUT
+          nix flake update 2>&1 | sed -E '/^unpacking .+ into the Git cache...$/d' >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Get date
