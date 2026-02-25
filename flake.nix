@@ -51,6 +51,8 @@
         '';
       });
 
+    devShells = forAllSystems (system: pkgs: {default = pkgs.callPackage ./shell.nix {};});
+
     nixosConfigurations = lib.genAttrs hosts (hostname: let
       lib' = import ./lib {inherit lib;};
     in
