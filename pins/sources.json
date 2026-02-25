@@ -1,0 +1,31 @@
+{
+  "pins": {
+    "helix": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "helix-editor",
+        "repo": "helix"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "c01d024f293240ae9ed4b3fb826f8292105fe3b2",
+      "url": "https://github.com/helix-editor/helix/archive/c01d024f293240ae9ed4b3fb826f8292105fe3b2.tar.gz",
+      "hash": "sha256-lu3yU2yw8nb/1F2AUCF3QqBgiBRicxBgpKNM1xa2huU="
+    },
+    "tuigreet": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "notashelf",
+        "repo": "tuigreet"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "b05e1c335cc79881b3c4822f8c8192c38efb2d80",
+      "url": "https://github.com/notashelf/tuigreet/archive/b05e1c335cc79881b3c4822f8c8192c38efb2d80.tar.gz",
+      "hash": "sha256-vaiq9NaaXM4oNIXxcff3EXp3T2Mu3OLxFyFK+el4BZs="
+    }
+  },
+  "version": 7
+}

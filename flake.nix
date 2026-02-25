@@ -21,14 +21,6 @@
         flake-compat.follows = "";
       };
     };
-    helix = {
-      url = "github:helix-editor/helix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    tuigreet = {
-      url = "github:notashelf/tuigreet";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = inputs @ {
@@ -36,6 +28,8 @@
     nix-flatpak,
     ...
   }: let
+    pins = import ./pins;
+
     inherit (nixpkgs) lib;
 
     forAllSystems = fn: lib.genAttrs lib.systems.flakeExposed (system: fn system nixpkgs.legacyPackages.${system});
@@ -57,8 +51,8 @@
       lib' = import ./lib {inherit lib;};
     in
       lib.nixosSystem {
-        specialArgs = {inherit inputs lib' hostname;};
-        modules = [./hosts/${hostname} ./modules nix-flatpak.nixosModules.nix-flatpak];
+        specialArgs = {inherit inputs pins lib' hostname;};
+        modules = [./hosts/${hostname} ./modules ./pkgs nix-flatpak.nixosModules.nix-flatpak];
       });
   };
 }

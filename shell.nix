@@ -2,4 +2,7 @@
   mkShell,
   npins,
 }:
-mkShell {packages = [npins];}
+mkShell {
+  packages = [npins];
+  env.NPINS_DIRECTORY = "pins";
+}

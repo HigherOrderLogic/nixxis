@@ -1,5 +1,4 @@
 {
-  inputs,
   lib,
   lib',
   pkgs,
@@ -8,7 +7,7 @@
 }: let
   cfg = config.cfg.programs.helix;
 
-  inherit (inputs.helix.packages.${pkgs.stdenv.hostPlatform.system}) helix;
+  helix = pkgs.localPackages.helix-git;
   helixWrapped = pkgs.symlinkJoin {
     name = "${lib.getName helix}-wrapped";
     paths = [helix];

@@ -1,5 +1,4 @@
 {
-  inputs,
   lib,
   pkgs,
   hostname,
@@ -17,7 +16,7 @@ in {
       useTextGreeter = true;
       settings.default_session = {
         user = "greeter";
-        command = lib.getExe inputs.tuigreet.packages.${pkgs.stdenv.hostPlatform.system}.tuigreet;
+        command = lib.getExe pkgs.localPackages.rafgreet;
       };
     };
     environment.etc."tuigreet/config.toml".source = toml.generate "tuigreet-config" {
