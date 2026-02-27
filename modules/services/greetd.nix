@@ -22,6 +22,7 @@ in {
     environment.etc."tuigreet/config.toml".source = toml.generate "tuigreet-config" {
       display = {
         greeting = "Descending into ${hostname}!";
+        show_title = false;
         show_time = true;
       };
       secret = {
