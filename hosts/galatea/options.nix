@@ -11,7 +11,10 @@
       };
       zram.enable = true;
     };
-    desktops.plasma6.enable = true;
+    desktops = {
+      niri.enable = true;
+      plasma6.enable = true;
+    };
     hardware.bluetooth.enable = true;
     programs = {
       fish.enable = true;

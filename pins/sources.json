@@ -13,6 +13,19 @@
       "url": "https://github.com/helix-editor/helix/archive/c01d024f293240ae9ed4b3fb826f8292105fe3b2.tar.gz",
       "hash": "sha256-lu3yU2yw8nb/1F2AUCF3QqBgiBRicxBgpKNM1xa2huU="
     },
+    "niri": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "niri-wm",
+        "repo": "niri"
+      },
+      "branch": "wip/branch",
+      "submodules": false,
+      "revision": "734d86ec061d15d1980c5b940b2f4dc9aee80cf5",
+      "url": "https://github.com/niri-wm/niri/archive/734d86ec061d15d1980c5b940b2f4dc9aee80cf5.tar.gz",
+      "hash": "sha256-ZJCM1XOHIdud6Jfpl4jYQOzbOJId9wmXT+hNJ1IPBIY="
+    },
     "tuigreet": {
       "type": "Git",
       "repository": {

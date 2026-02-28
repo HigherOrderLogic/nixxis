@@ -1,0 +1,22 @@
+prefer-no-csd
+
+cursor {
+    xcursor-theme "phinger-cursors-light"
+    xcursor-size 24
+}
+
+input {
+    keyboard {
+        numlock
+    }
+}
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
