@@ -39,9 +39,10 @@
     formatter = forAllSystems (system: pkgs:
       pkgs.writeShellApplication {
         name = "aljd";
-        runtimeInputs = with pkgs; [alejandra fd];
+        runtimeInputs = with pkgs; [alejandra kdlfmt fd];
         text = ''
           fd "$@" -t f -e nix -X alejandra -q '{}'
+          fd "$@" -t f -e kdl -X kdlfmt format --kdl-version v1 --log-level off '{}'
         '';
       });
 

@@ -1,99 +1,218 @@
 binds {
-    Mod+Ctrl+M { power-off-monitors; }
-
-    Mod+Shift+Slash { show-hotkey-overlay; }
-
-    Mod+Left  { focus-column-left; }
-    Mod+Right { focus-column-right; }
-    Mod+Down  { focus-window-or-workspace-down; }
-    Mod+Up    { focus-window-or-workspace-up; }
-
-    Mod+BracketLeft  { consume-or-expel-window-left; }
-    Mod+BracketRight { consume-or-expel-window-right; }
-
-    Mod+Shift+Left  { focus-column-first; }
-    Mod+Shift+Right { focus-column-last; }
-
-    Mod+Alt+Down { focus-workspace-down; }
-    Mod+Alt+Up   { focus-workspace-up;  }
-
-    Mod+Ctrl+Left  { move-column-left; }
-    Mod+Ctrl+Right { move-column-right; }
-    Mod+Ctrl+Down  { move-window-down-or-to-workspace-down; }
-    Mod+Ctrl+Up    { move-window-up-or-to-workspace-up;}
-
-    Mod+Ctrl+Shift+Left  { move-column-to-first; }
-    Mod+Ctrl+Shift+Right { move-column-to-last; }
-    Mod+Ctrl+Shift+Down  { move-column-to-workspace-down; }
-    Mod+Ctrl+Shift+Up    { move-column-to-workspace-up; }
-
-    Mod+Ctrl+Alt+Down { move-workspace-down; }
-    Mod+Ctrl+Alt+Up   { move-workspace-up;}
-
-    Mod+F       { maximize-column; }
-    Mod+Shift+F { expand-column-to-available-width; }
-    Mod+Alt+F   { fullscreen-window; }
-
-    Mod+C       { center-column; }
-    Mod+Shift+C { center-visible-columns; }
-
-    Mod+Minus { set-column-width "-10%"; }
-    Mod+Equal { set-column-width "+10%"; }
-
-    Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Equal { set-window-height "+10%"; }
-    
-    Mod+Apostrophe { toggle-column-tabbed-display; }
-
-    Mod+1 { focus-workspace 1; }
-    Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
-    Mod+4 { focus-workspace 4; }
-    Mod+5 { focus-workspace 5; }
-    Mod+6 { focus-workspace 6; }
-    Mod+7 { focus-workspace 7; }
-    Mod+8 { focus-workspace 8; }
-    Mod+9 { focus-workspace 9; }
-    Mod+0 { focus-workspace 10; }
-
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
-    Mod+Ctrl+5 { move-column-to-workspace 5; }
-    Mod+Ctrl+6 { move-column-to-workspace 6; }
-    Mod+Ctrl+7 { move-column-to-workspace 7; }
-    Mod+Ctrl+8 { move-column-to-workspace 8; }
-    Mod+Ctrl+9 { move-column-to-workspace 9; }
-    Mod+Ctrl+0 { move-column-to-workspace 10; }
-
-    Mod+Grave repeat=false { toggle-overview; }
-
-    Mod+Q repeat=false { close-window; }
-
-    Mod+P       { screenshot show-pointer=false; }
-    Mod+Shift+P { screenshot-screen show-pointer=false; }
-    Mod+Alt+P   { screenshot-window; }
-
-    Mod+Return hotkey-overlay-title="Open terminal" repeat=false { spawn "foot"; }
-    Mod+Space  hotkey-overlay-title="Open launcher" repeat=false { spawn "bash" "-c" "pkill fuzzel || fuzzel"; }
-
-    Mod+Period hotkey-overlay-title="Open emoji picker" repeat=false { spawn "bash" "-c" "pkill fuzzel || ~/.config/niri/scripts/fuzzel-emoji.sh"; }
-    Mod+V      hotkey-overlay-title="Open clipboard history" repeat=false { spawn "bash" "-c" "pkill fuzzel || cliphist list | fuzzel  --match-mode fzf --dmenu | cliphist decode | wl-copy"; }
-
-    Mod+B       hotkey-overlay-title="Change to a random background image" repeat=false { spawn "~/.config/niri/scripts/wallpaper.sh" "random"; }
-    Mod+Shift+B hotkey-overlay-title="Pick a new background image" repeat=false { spawn "~/.config/niri/scripts/wallpaper.sh" "choose"; }
-
-    Mod+Backslash hotkey-overlay-title="Open right sidebar" repeat=false { spawn "qs" "-c" "amethyst" "ipc" "call" "right-sidebar" "toggle"; }
-
-    Alt+Tab hotkey-overlay-title="Open app switcher" { spawn "qs" "-c" "amethyst" "ipc" "call" "app-switcher" "cycleNextWindow"; }
-    Alt+Shift+Tab                                    { spawn "qs" "-c" "amethyst" "ipc" "call" "app-switcher" "cyclePreviousWindow"; }
-
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "up"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "down"; }
-    XF86AudioMute        allow-when-locked=true { spawn "~/.config/niri/scripts/volume" "mute"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-
-    Mod+Ctrl+Escape                                     { quit; }
-    Mod+Escape hotkey-overlay-title="Open session menu" { spawn "qs" "-c" "amethyst" "ipc" "call" "session-menu" "toggle"; }
+    Mod+Ctrl+M {
+        power-off-monitors
+    }
+    Mod+Shift+Slash {
+        show-hotkey-overlay
+    }
+    Mod+Left {
+        focus-column-left
+    }
+    Mod+Right {
+        focus-column-right
+    }
+    Mod+Down {
+        focus-window-or-workspace-down
+    }
+    Mod+Up {
+        focus-window-or-workspace-up
+    }
+    Mod+BracketLeft {
+        consume-or-expel-window-left
+    }
+    Mod+BracketRight {
+        consume-or-expel-window-right
+    }
+    Mod+Shift+Left {
+        focus-column-first
+    }
+    Mod+Shift+Right {
+        focus-column-last
+    }
+    Mod+Alt+Down {
+        focus-workspace-down
+    }
+    Mod+Alt+Up {
+        focus-workspace-up
+    }
+    Mod+Ctrl+Left {
+        move-column-left
+    }
+    Mod+Ctrl+Right {
+        move-column-right
+    }
+    Mod+Ctrl+Down {
+        move-window-down-or-to-workspace-down
+    }
+    Mod+Ctrl+Up {
+        move-window-up-or-to-workspace-up
+    }
+    Mod+Ctrl+Shift+Left {
+        move-column-to-first
+    }
+    Mod+Ctrl+Shift+Right {
+        move-column-to-last
+    }
+    Mod+Ctrl+Shift+Down {
+        move-column-to-workspace-down
+    }
+    Mod+Ctrl+Shift+Up {
+        move-column-to-workspace-up
+    }
+    Mod+Ctrl+Alt+Down {
+        move-workspace-down
+    }
+    Mod+Ctrl+Alt+Up {
+        move-workspace-up
+    }
+    Mod+F {
+        maximize-column
+    }
+    Mod+Shift+F {
+        expand-column-to-available-width
+    }
+    Mod+Alt+F {
+        fullscreen-window
+    }
+    Mod+C {
+        center-column
+    }
+    Mod+Shift+C {
+        center-visible-columns
+    }
+    Mod+Minus {
+        set-column-width "-10%"
+    }
+    Mod+Equal {
+        set-column-width "+10%"
+    }
+    Mod+Shift+Minus {
+        set-window-height "-10%"
+    }
+    Mod+Shift+Equal {
+        set-window-height "+10%"
+    }
+    Mod+Apostrophe {
+        toggle-column-tabbed-display
+    }
+    Mod+1 {
+        focus-workspace 1
+    }
+    Mod+2 {
+        focus-workspace 2
+    }
+    Mod+3 {
+        focus-workspace 3
+    }
+    Mod+4 {
+        focus-workspace 4
+    }
+    Mod+5 {
+        focus-workspace 5
+    }
+    Mod+6 {
+        focus-workspace 6
+    }
+    Mod+7 {
+        focus-workspace 7
+    }
+    Mod+8 {
+        focus-workspace 8
+    }
+    Mod+9 {
+        focus-workspace 9
+    }
+    Mod+0 {
+        focus-workspace 10
+    }
+    Mod+Ctrl+1 {
+        move-column-to-workspace 1
+    }
+    Mod+Ctrl+2 {
+        move-column-to-workspace 2
+    }
+    Mod+Ctrl+3 {
+        move-column-to-workspace 3
+    }
+    Mod+Ctrl+4 {
+        move-column-to-workspace 4
+    }
+    Mod+Ctrl+5 {
+        move-column-to-workspace 5
+    }
+    Mod+Ctrl+6 {
+        move-column-to-workspace 6
+    }
+    Mod+Ctrl+7 {
+        move-column-to-workspace 7
+    }
+    Mod+Ctrl+8 {
+        move-column-to-workspace 8
+    }
+    Mod+Ctrl+9 {
+        move-column-to-workspace 9
+    }
+    Mod+Ctrl+0 {
+        move-column-to-workspace 10
+    }
+    Mod+Grave repeat=false {
+        toggle-overview
+    }
+    Mod+Q repeat=false {
+        close-window
+    }
+    Mod+P {
+        screenshot show-pointer=false
+    }
+    Mod+Shift+P {
+        screenshot-screen show-pointer=false
+    }
+    Mod+Alt+P {
+        screenshot-window
+    }
+    Mod+Return hotkey-overlay-title="Open terminal" repeat=false {
+        spawn "foot"
+    }
+    Mod+Space hotkey-overlay-title="Open launcher" repeat=false {
+        spawn "bash" "-c" "pkill fuzzel || fuzzel"
+    }
+    Mod+Period hotkey-overlay-title="Open emoji picker" repeat=false {
+        spawn "bash" "-c" "pkill fuzzel || ~/.config/niri/scripts/fuzzel-emoji.sh"
+    }
+    Mod+V hotkey-overlay-title="Open clipboard history" repeat=false {
+        spawn "bash" "-c" "pkill fuzzel || cliphist list | fuzzel  --match-mode fzf --dmenu | cliphist decode | wl-copy"
+    }
+    Mod+B hotkey-overlay-title="Change to a random background image" repeat=false {
+        spawn "~/.config/niri/scripts/wallpaper.sh" "random"
+    }
+    Mod+Shift+B hotkey-overlay-title="Pick a new background image" repeat=false {
+        spawn "~/.config/niri/scripts/wallpaper.sh" "choose"
+    }
+    Mod+Backslash hotkey-overlay-title="Open right sidebar" repeat=false {
+        spawn "qs" "-c" "amethyst" "ipc" "call" "right-sidebar" "toggle"
+    }
+    Alt+Tab hotkey-overlay-title="Open app switcher" {
+        spawn "qs" "-c" "amethyst" "ipc" "call" "app-switcher" "cycleNextWindow"
+    }
+    Alt+Shift+Tab {
+        spawn "qs" "-c" "amethyst" "ipc" "call" "app-switcher" "cyclePreviousWindow"
+    }
+    XF86AudioRaiseVolume allow-when-locked=true {
+        spawn "~/.config/niri/scripts/volume" "up"
+    }
+    XF86AudioLowerVolume allow-when-locked=true {
+        spawn "~/.config/niri/scripts/volume" "down"
+    }
+    XF86AudioMute allow-when-locked=true {
+        spawn "~/.config/niri/scripts/volume" "mute"
+    }
+    XF86AudioMicMute allow-when-locked=true {
+        spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"
+    }
+    Mod+Ctrl+Escape {
+        quit
+    }
+    Mod+Escape hotkey-overlay-title="Open session menu" {
+        spawn "qs" "-c" "amethyst" "ipc" "call" "session-menu" "toggle"
+    }
 }

@@ -1,18 +1,18 @@
 layout {
     gaps 4
     background-color "transparent"
-
-    insert-hint { color "#ffffff80"; }
-
-    focus-ring { off; }
-
+    insert-hint {
+        color "#ffffff80"
+    }
+    focus-ring {
+        off
+    }
     border {
-    	on
+        on
         width 2
         active-color "#ffffff"
         inactive-color "#000000"
     }
- 
     tab-indicator {
         place-within-column
         length total-proportion=1.0
@@ -23,17 +23,13 @@ layout {
         position "bottom"
     }
 }
-
 window-rule {
     geometry-corner-radius 6
     clip-to-geometry true
 }
-
 window-rule {
-	match app-id="foot"
-	
+    match app-id="foot"
     opacity 0.8
-
     background-effect {
         blur true
     }
