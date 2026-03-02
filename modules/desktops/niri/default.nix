@@ -21,24 +21,28 @@ in {
     services.displayManager.sessionPackages = [niri];
     hj = {
       packages = lib.flatten [niri (with pkgs; [fuzzel phinger-cursors])];
-      xdg.config.files."niri/config.kdl".text = let
-        xwaylandCfg = pkgs.writeText "xwayland.kdl" ''
-          xwayland-satellite {
-            path "${lib.getExe pkgs.xwayland-satellite}"
-          }
-        '';
-        extraCfg = pkgs.writeText "extra.kdl" cfg.extraConfig;
-      in
-        lib.pipe ./config [
-          builtins.readDir
-          (lib.filterAttrs (_: v: v == "regular"))
-          lib.attrNames
-          (lib.map (v: "${./config}/${v}"))
-          (v: v ++ [xwaylandCfg] ++ lib.optional (cfg.extraConfig != "") extraCfg)
-          (lib.concatMapStrings (v: ''
-            include "${v}"
-          ''))
-        ];
+      xdg.config.files."niri/config.kdl".source = pkgs.writeTextFile {
+        name = "niri-config.kdl";
+        text = let
+          xwaylandCfg = pkgs.writeText "xwayland.kdl" ''
+            xwayland-satellite {
+              path "${lib.getExe pkgs.xwayland-satellite}"
+            }
+          '';
+          extraCfg = pkgs.writeText "extra.kdl" cfg.extraConfig;
+        in
+          lib.pipe ./config [
+            builtins.readDir
+            (lib.filterAttrs (_: v: v == "regular"))
+            lib.attrNames
+            (lib.map (v: "${./config}/${v}"))
+            (v: v ++ [xwaylandCfg] ++ lib.optional (cfg.extraConfig != "") extraCfg)
+            (lib.concatMapStrings (v: ''
+              include "${v}"
+            ''))
+          ];
+        checkPhase = "${lib.getExe niri} validate -c $target";
+      };
     };
     xdg.portal = {
       enable = true;
