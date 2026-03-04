@@ -15,4 +15,5 @@ niri.overrideAttrs (final: prev: {
     inherit (final) src;
     hash = "sha256-uo4AWT4nGV56iiSLhXK30goI7HCPc7AUZjRLgUvLfUE=";
   };
+  env = prev.env // {NIRI_BUILD_COMMIT = final.src.revision;};
 })
