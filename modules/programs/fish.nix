@@ -8,7 +8,7 @@
 in {
   options.cfg.programs.fish.enable = lib.mkEnableOption "fish";
   config = lib.mkIf cfg.enable {
-    documentation.man.generateCaches = false;
+    documentation.man.cache.enable = false;
     programs.fish = {
       enable = true;
       useBabelfish = true;
