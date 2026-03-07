@@ -10,7 +10,7 @@ in {
     nix = {
       inherit nixPath;
       channel.enable = false;
-      registry =
+      registry = lib.mkMerge [
         {
           hulse.to = {
             type = "github";
@@ -18,7 +18,8 @@ in {
             repo = "hulse";
           };
         }
-        // builtins.mapAttrs (_: flake: {inherit flake;}) inputs;
+        (builtins.mapAttrs (_: flake: {inherit flake;}) inputs)
+      ];
       settings = {
         experimental-features = ["nix-command" "flakes"];
         auto-optimise-store = true;

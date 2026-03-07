@@ -30,7 +30,7 @@ in {
       '';
     };
     users.users.${config.cfg.core.username}.shell = pkgs.fish;
-    hj.xdg.config.files =
+    hj.xdg.config.files = lib.mkMerge [
       {
         "fish/conf.d/binds.fish".text = ''
           if status is-interactive
@@ -48,7 +48,7 @@ in {
             config.hjem.users.${config.cfg.core.username}.environment.shellAliases;
         };
       }
-      // lib.mapAttrs' (
+      (lib.mapAttrs' (
         name: p: let
           pluginPath = f: "${p.src}/${f}";
           testPluginDir = d: let dirPath = pluginPath d; in (builtins.pathExists dirPath) && (lib.readFileType dirPath == "directory");
@@ -75,6 +75,7 @@ in {
               '')
             ];
           }
-      ) {inherit (pkgs.fishPlugins) hydro pisces;};
+      ) {inherit (pkgs.fishPlugins) hydro pisces;})
+    ];
   };
 }

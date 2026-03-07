@@ -69,71 +69,78 @@ in {
         EDITOR = lib.mkIf cfg.defaultEditor (lib.mkForce "hx");
       };
       xdg.config.files = {
-        "helix/config.toml".source = toml.generate "helix-config.toml" ({
-            editor =
-              {
-                line-number = "relative";
-                soft-wrap.enable = true;
-                rainbow-brackets = true;
-                cursor-shape = {
-                  insert = "bar";
-                  select = "bar";
+        "helix/config.toml" = {
+          generator = toml.generate "helix-config.toml";
+          value = lib.mkMerge [
+            {
+              editor = lib.mkMerge [
+                {
+                  line-number = "relative";
+                  soft-wrap.enable = true;
+                  rainbow-brackets = true;
+                  cursor-shape = {
+                    insert = "bar";
+                    select = "bar";
+                  };
+                  completion-timeout = 5;
+                  completion-replace = true;
+                  lsp.display-inlay-hints = true;
+                  end-of-line-diagnostics = "hint";
+                  inline-diagnostics.cursor-line = "hint";
+                  indent-guides = {
+                    render = true;
+                    character = "╎";
+                  };
+                  statusline = {
+                    left = ["mode" "spinner"];
+                    center = ["file-name" "read-only-indicator" "file-modification-indicator"];
+                    right = ["diagnostics" "version-control" "register" "file-encoding" "position"];
+                  };
+                }
+                (lib.mkIf (cfg.trueColor != null) {true-color = cfg.trueColor;})
+              ];
+              keys = {
+                insert = {
+                  C-left = "move_prev_word_start";
+                  C-right = ["move_next_word_start" "extend_char_right"];
                 };
-                completion-timeout = 5;
-                completion-replace = true;
-                lsp.display-inlay-hints = true;
-                end-of-line-diagnostics = "hint";
-                inline-diagnostics.cursor-line = "hint";
-                indent-guides = {
-                  render = true;
-                  character = "╎";
-                };
-                statusline = {
-                  left = ["mode" "spinner"];
-                  center = ["file-name" "read-only-indicator" "file-modification-indicator"];
-                  right = ["diagnostics" "version-control" "register" "file-encoding" "position"];
-                };
-              }
-              // lib.optionalAttrs (cfg.trueColor != null) {true-color = cfg.trueColor;};
-            keys = {
-              insert = {
-                C-left = "move_prev_word_start";
-                C-right = ["move_next_word_start" "extend_char_right"];
-              };
-              normal = {
-                C-g = lib.optionals cfg.integrations.gitui.enable [
-                  ":write-all"
-                  ":new"
-                  ":insert-output ${lib.getExe pkgs.gitui} >/dev/tty"
-                  ":buffer-close!"
-                  ":redraw"
-                  ":reload-all"
+                normal = lib.mkMerge [
+                  (lib.mkIf cfg.integrations.gitui.enable {
+                    C-g = [
+                      ":write-all"
+                      ":new"
+                      ":insert-output ${lib.getExe pkgs.gitui} >/dev/tty"
+                      ":buffer-close!"
+                      ":redraw"
+                      ":reload-all"
+                    ];
+                  })
+                  (lib.mkIf cfg.integrations.jjui.enable {
+                    C-j = [
+                      ":write-all"
+                      ":new"
+                      ":insert-output ${lib.getExe pkgs.jjui} >/dev/tty"
+                      ":buffer-close!"
+                      ":redraw"
+                      ":reload-all"
+                    ];
+                  })
                 ];
-                C-j = lib.optionals cfg.integrations.jjui.enable [
-                  ":write-all"
-                  ":new"
-                  ":insert-output ${lib.getExe pkgs.jjui} >/dev/tty"
-                  ":buffer-close!"
-                  ":redraw"
-                  ":reload-all"
-                ];
               };
-            };
-          }
-          // cfg.extraConfig);
+            }
+            cfg.extraConfig
+          ];
+        };
         "helix/languages.toml".source = toml.generate "helix-languages-config.toml" {
           language = builtins.concatLists [
             (lib.optional cfg.languages.nix.enable {
               name = "nix";
               language-servers = ["nil" "nixd"];
             })
-            (
-              lib.optional cfg.languages.rust.enable
-              {
-                name = "rust";
-                language-servers = ["rust-analyzer"];
-              }
-            )
+            (lib.optional cfg.languages.rust.enable {
+              name = "rust";
+              language-servers = ["rust-analyzer"];
+            })
             (lib.optional cfg.languages.cpp.enable {
               name = "cpp";
               language-servers = ["clangd"];

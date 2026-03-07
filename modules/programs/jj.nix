@@ -26,14 +26,17 @@ in {
   config = lib.mkIf cfg.enable {
     hj = {
       packages = with pkgs; [jujutsu];
-      xdg.config.files."jj/config.toml".source = toml.generate "jj-config" ({
-          user = {inherit (cfg) name email;};
-        }
-        // (lib.optionalAttrs cfg.integrations.difftastic.enable {
-          ui = {
-            diff-formatter = [(lib.getExe pkgs.difftastic) "--display=side-by-side" "--color=always" "$left" "$right"];
-          };
-        }));
+      xdg.config.files."jj/config.toml" = {
+        generator = toml.generate "jj-config";
+        value = lib.mkMerge [
+          {
+            user = {inherit (cfg) name email;};
+          }
+          (lib.mkIf cfg.integrations.difftastic.enable {
+            ui.diff-formatter = [(lib.getExe pkgs.difftastic) "--display=side-by-side" "--color=always" "$left" "$right"];
+          })
+        ];
+      };
     };
   };
 }
