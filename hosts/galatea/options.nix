@@ -31,6 +31,7 @@
           python.enable = false;
           java.enable = false;
         };
+        integrations.jjui.enable = false;
       };
       nh.enable = true;
     };
