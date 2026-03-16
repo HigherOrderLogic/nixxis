@@ -1,0 +1,34 @@
+name: Mirror repo
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  tangled:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure SSH
+        env:
+          TANGLED_SSH_KEY: ${{ secrets.TANGLED_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$TANGLED_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 tangled.org >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Push to Tangled
+        run: |
+          git remote add tangled git@tangled.org:tachyonism.tngl.sh/nixxis
+          git push tangled main --force
+          git push tangled --tags --force
