@@ -30,6 +30,7 @@ in {
         generator = gitIni.generate "git-config";
         value = lib.mkMerge [
           {
+            core.pager = lib.getExe pkgs.less;
             user = {inherit (cfg) name email;};
             signing.format = "https";
             init.defaultBranch = "main";
