@@ -1,5 +1,6 @@
 {
   lib,
+  lib',
   pkgs,
   config,
   ...
@@ -12,7 +13,7 @@ in {
   options.cfg.desktops.niri = {
     enable = lib.mkEnableOption "Niri";
     extraConfig = lib.mkOption {
-      type = lib.types.lines;
+      type = lib'.types.maybeListOf lib.types.lines;
       default = "";
       description = "Set extra Niri config.";
     };
@@ -29,14 +30,14 @@ in {
               path "${lib.getExe pkgs.xwayland-satellite}"
             }
           '';
-          extraCfg = pkgs.writeText "extra.kdl" cfg.extraConfig;
+          extraCfgs = lib.imap (i: v: pkgs.writeText "extra-${i}.kdl" v) cfg.extraConfig;
         in
           lib.pipe ./config [
             builtins.readDir
             (lib.filterAttrs (_: v: v == "regular"))
             lib.attrNames
             (lib.map (v: "${./config}/${v}"))
-            (v: v ++ [xwaylandCfg] ++ lib.optional (cfg.extraConfig != "") extraCfg)
+            (v: v ++ [xwaylandCfg] ++ extraCfgs)
             (lib.concatMapStrings (v: ''
               include "${v}"
             ''))
