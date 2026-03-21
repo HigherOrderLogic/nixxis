@@ -33,7 +33,7 @@ in {
           };
         environment.sessionVariables = {
           EDITOR = lib.mkDefault "edit";
-          PAGER = "bat";
+          PAGER = lib.getExe pkgs.bat;
         };
       };
     };

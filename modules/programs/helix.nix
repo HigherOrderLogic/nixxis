@@ -9,6 +9,7 @@
 
   helix = pkgs.localPackages.helix-git;
   helixWrapped = pkgs.symlinkJoin {
+    inherit (helix) meta;
     name = "${lib.getName helix}-wrapped";
     paths = [helix];
     nativeBuildInputs = [pkgs.makeBinaryWrapper];
@@ -66,7 +67,7 @@ in {
     hj = {
       packages = [helixWrapped];
       environment.sessionVariables = {
-        EDITOR = lib.mkIf cfg.defaultEditor (lib.mkForce "hx");
+        EDITOR = lib.mkIf cfg.defaultEditor (lib.mkForce (lib.getExe helixWrapped));
       };
       xdg.config.files = {
         "helix/config.toml" = {
