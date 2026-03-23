@@ -13,7 +13,7 @@ niri.overrideAttrs (final: prev: {
   '';
   cargoDeps = rustPlatform.fetchCargoVendor {
     inherit (final) src;
-    hash = "sha256-GIcWKuF5Ls6NC5ATKYPhM4GE6/B9muOxLWTBTM81y30=";
+    hash = "sha256-soJYT6TavlyqtVqMD70QYDZ+8swn6TVXsFHadJxaxWo=";
   };
   env = prev.env // {NIRI_BUILD_COMMIT = final.src.revision;};
 })
