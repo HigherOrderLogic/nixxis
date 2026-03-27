@@ -9,9 +9,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "c01d024f293240ae9ed4b3fb826f8292105fe3b2",
-      "url": "https://github.com/helix-editor/helix/archive/c01d024f293240ae9ed4b3fb826f8292105fe3b2.tar.gz",
-      "hash": "sha256-lu3yU2yw8nb/1F2AUCF3QqBgiBRicxBgpKNM1xa2huU="
+      "revision": "253e6195c8cae014da01abea6f741b12eeed674c",
+      "url": "https://github.com/helix-editor/helix/archive/253e6195c8cae014da01abea6f741b12eeed674c.tar.gz",
+      "hash": "sha256-zlRH3N7JCrzSuvCuy1yGgtfRL6rMXrpRTC8MrtYGy3s="
     },
     "niri": {
       "type": "Git",
