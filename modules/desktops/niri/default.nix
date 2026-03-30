@@ -24,6 +24,52 @@ in {
       xdg.config.files."niri/config.kdl".source = pkgs.writeTextFile {
         name = "niri-config.kdl";
         text = let
+          fuzzel = lib.getExe pkgs.fuzzel;
+          wlCopy = lib.getExe' pkgs.wl-clipboard "wl-copy";
+          cliphist = lib.getExe pkgs.cliphist;
+          wpctl = lib.getExe' pkgs.wireplumber "wpctl";
+          fuzzelEmoji = lib.getExe (pkgs.writeShellScriptBin "fuzzel-emoji" ''
+            cat ${./emojis.txt} | ${fuzzel} --match-mode fzf --dmenu | cut -d ' ' -f 1 | tr -d '\n' | ${wlCopy}
+          '');
+          volumeControl = lib.getExe (pkgs.writeScriptBin "volume-control" ''
+            if [[ -n $2 ]]; then
+              _sink=$2
+            else
+              _sink=@DEFAULT_AUDIO_SINK@
+            fi
+
+            _volume=$(${wpctl} get-volume "''${_sink}")
+
+            down() {
+              if ! echo $${_volume} | grep -q '[MUTED]'; then
+                ${wpctl} set-volume "''${_sink}" 2%-
+              fi
+            }
+
+            up() {
+              if ! echo $${_volume} | grep -q '[MUTED]'; then
+            	  ${wpctl} set-volume -l 1.0 "''${_sink}" 2%+
+              fi
+            }
+
+            case "$1" in
+              up) up ;;
+              down) down ;;
+            esac
+          '');
+          spawnBindsCfg = pkgs.writeText "spawn-binds.kdl" ''
+            binds {
+              Mod+Return hotkey-overlay-title="Open terminal" repeat=false { spawn "foot"; }
+              Mod+Space hotkey-overlay-title="Open launcher" repeat=false { spawn-sh "pkill fuzzel || ${fuzzel}"; }
+              Mod+Period hotkey-overlay-title="Open emoji picker" repeat=false { spawn-sh "pkill fuzzel || ${fuzzelEmoji}"; }
+              Mod+V hotkey-overlay-title="Open clipboard history" repeat=false { spawn-sh "pkill fuzzel || ${cliphist} list | ${fuzzel} --match-mode fzf --dmenu | ${cliphist} decode | ${wlCopy}"; }
+              XF86AudioRaiseVolume allow-when-locked=true { spawn "${volumeControl}" "up"; }
+              XF86AudioLowerVolume allow-when-locked=true { spawn "${volumeControl}" "down"; }
+              XF86AudioMute allow-when-locked=true { spawn "${wpctl}" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+              XF86AudioMicMute allow-when-locked=true { spawn "${wpctl}" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+            }
+          '';
+
           xwaylandCfg = pkgs.writeText "xwayland.kdl" ''
             xwayland-satellite {
               path "${lib.getExe pkgs.xwayland-satellite}"
@@ -36,7 +82,7 @@ in {
             (lib.filterAttrs (_: v: v == "regular"))
             lib.attrNames
             (lib.map (v: "${./config}/${v}"))
-            (v: v ++ [xwaylandCfg] ++ lib.optional (cfg.extraConfig != "") extraCfg)
+            (v: v ++ [xwaylandCfg spawnBindsCfg] ++ lib.optional (cfg.extraConfig != "") extraCfg)
             (lib.concatMapStrings (v: ''
               include "${v}"
             ''))

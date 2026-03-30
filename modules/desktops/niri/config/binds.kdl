@@ -170,49 +170,7 @@ binds {
     Mod+Alt+P {
         screenshot-window
     }
-    Mod+Return hotkey-overlay-title="Open terminal" repeat=false {
-        spawn "foot"
-    }
-    Mod+Space hotkey-overlay-title="Open launcher" repeat=false {
-        spawn "bash" "-c" "pkill fuzzel || fuzzel"
-    }
-    Mod+Period hotkey-overlay-title="Open emoji picker" repeat=false {
-        spawn "bash" "-c" "pkill fuzzel || ~/.config/niri/scripts/fuzzel-emoji.sh"
-    }
-    Mod+V hotkey-overlay-title="Open clipboard history" repeat=false {
-        spawn "bash" "-c" "pkill fuzzel || cliphist list | fuzzel  --match-mode fzf --dmenu | cliphist decode | wl-copy"
-    }
-    Mod+B hotkey-overlay-title="Change to a random background image" repeat=false {
-        spawn "~/.config/niri/scripts/wallpaper.sh" "random"
-    }
-    Mod+Shift+B hotkey-overlay-title="Pick a new background image" repeat=false {
-        spawn "~/.config/niri/scripts/wallpaper.sh" "choose"
-    }
-    Mod+Backslash hotkey-overlay-title="Open right sidebar" repeat=false {
-        spawn "qs" "-c" "amethyst" "ipc" "call" "right-sidebar" "toggle"
-    }
-    Alt+Tab hotkey-overlay-title="Open app switcher" {
-        spawn "qs" "-c" "amethyst" "ipc" "call" "app-switcher" "cycleNextWindow"
-    }
-    Alt+Shift+Tab {
-        spawn "qs" "-c" "amethyst" "ipc" "call" "app-switcher" "cyclePreviousWindow"
-    }
-    XF86AudioRaiseVolume allow-when-locked=true {
-        spawn "~/.config/niri/scripts/volume" "up"
-    }
-    XF86AudioLowerVolume allow-when-locked=true {
-        spawn "~/.config/niri/scripts/volume" "down"
-    }
-    XF86AudioMute allow-when-locked=true {
-        spawn "~/.config/niri/scripts/volume" "mute"
-    }
-    XF86AudioMicMute allow-when-locked=true {
-        spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"
-    }
     Mod+Ctrl+Escape {
         quit
-    }
-    Mod+Escape hotkey-overlay-title="Open session menu" {
-        spawn "qs" "-c" "amethyst" "ipc" "call" "session-menu" "toggle"
     }
 }
