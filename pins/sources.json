@@ -26,6 +26,19 @@
       "url": "https://github.com/niri-wm/niri/archive/d06dd4b9e60fa07120c217aa095f3ed8caac99f2.tar.gz",
       "hash": "sha256-L/Ldq9G41Mj8WjWTuC+rePvWIx1A/tHdFpLbQmtrMSA="
     },
+    "nix-index-database": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "nix-index-database"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "bc13aeaed568be76eab84df88ff39261bb52ff70",
+      "url": "https://github.com/nix-community/nix-index-database/archive/bc13aeaed568be76eab84df88ff39261bb52ff70.tar.gz",
+      "hash": "sha256-89Mh4Eb/5stVJX6kGagVMijcU2FmfeD8Qv7UXc5d92o="
+    },
     "tuigreet": {
       "type": "Git",
       "repository": {

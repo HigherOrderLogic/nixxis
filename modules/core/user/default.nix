@@ -28,7 +28,7 @@ in {
         in
           builtins.attrValues {
             inherit (pkgs) bat eza msedit;
-            inherit (inputs.nix-index-db.packages.${pkgs.stdenv.hostPlatform.system}) comma-with-db;
+            inherit (pkgs.localPackages) comma-with-db;
             inherit realwhich;
           };
         environment.sessionVariables = {

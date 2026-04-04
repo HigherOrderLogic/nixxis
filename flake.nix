@@ -10,10 +10,6 @@
       };
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
-    nix-index-db = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
       inputs = {
