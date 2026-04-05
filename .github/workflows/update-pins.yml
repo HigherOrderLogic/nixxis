@@ -50,6 +50,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Capture pin metadata
+        id: pin-before
+        env:
+          PIN: ${{ matrix.pin }}
+        run: |
+          python3 - << 'PY'
+          import json
+          import os
+
+          pin = os.environ["PIN"]
+
+          with open("pins/sources.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+            spec = data["pins"][pin]
+            repo = spec.get("repository", {})
+            is_git = spec.get("type") == "Git"
+            is_github = is_git and repo.get("type") == "GitHub"
+
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"old_rev={spec.get('revision', '')}\n")
+              out.write(f"is_git={'true' if is_git else 'false'}\n")
+              out.write(f"is_github={'true' if is_github else 'false'}\n")
+              out.write(f"owner={repo.get('owner', '') if is_github else ''}\n")
+              out.write(f"repo={repo.get('repo', '') if is_github else ''}\n")
+          PY
+
       - name: Install Nix
         uses: cachix/install-nix-action@v31
 
@@ -59,13 +86,51 @@ jobs:
         run: |
           nix run --inputs-from .# nixpkgs#npins -- update ${{ matrix.pin }}
 
-      - name: create PR
+      - name: Generate PR body
+        env:
+          PIN: ${{ matrix.pin }}
+          OLD_REV: ${{ steps.pin-before.outputs.old_rev }}
+          IS_GIT: ${{ steps.pin-before.outputs.is_git }}
+          IS_GITHUB: ${{ steps.pin-before.outputs.is_github }}
+          OWNER: ${{ steps.pin-before.outputs.owner }}
+          REPO: ${{ steps.pin-before.outputs.repo }}
+        run: |
+          python3 - << 'PY'
+          import json
+          import os
+
+          pin = os.environ["PIN"]
+          old_rev = os.environ["OLD_REV"]
+          is_git = os.environ["IS_GIT"] == "true"
+          is_github = os.environ["IS_GITHUB"] == "true"
+          owner = os.environ["OWNER"]
+          repo = os.environ["REPO"]
+
+          with open("pins/sources.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+            new_rev = data["pins"][pin].get("revision", "")
+
+            lines = []
+            lines.append(f"Automatic pin `{pin}` update.")
+
+            if is_git and is_github and owner and repo and old_rev and new_rev and old_rev != new_rev:
+              lines.append("")
+              compare_url = f"https://github.com/{owner}/{repo}/compare/{old_rev}...{new_rev}"
+              compare_label = f"{old_rev[:7]}...{new_rev[:7]}"
+              lines.append(f"Diff: [{compare_label}]({compare_url})")
+
+            with open("pr-body.md", "w", encoding="utf-8") as md:
+              md.write("\n".join(lines) + "\n")
+          PY
+
+      - name: Create PR
         uses: peter-evans/create-pull-request@v8
         with:
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           commit-message: |
             chore: update pin `${{ matrix.pin }}` (${{ needs.get-date.outputs.date }})
           title: "chore: update pin `${{ matrix.pin }}`"
-          body: Automatic pin `${{ matrix.pin }}` update.
+          body-path: pr-body.md
           branch: workflow/update-pin/${{ matrix.pin }}
-          delete-branch: true      
+          delete-branch: true
