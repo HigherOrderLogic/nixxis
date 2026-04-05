@@ -87,6 +87,7 @@ jobs:
           nix run --inputs-from .# nixpkgs#npins -- update ${{ matrix.pin }}
 
       - name: Generate PR body
+        id: pr-body
         env:
           PIN: ${{ matrix.pin }}
           OLD_REV: ${{ steps.pin-before.outputs.old_rev }}
@@ -120,8 +121,10 @@ jobs:
               compare_label = f"{old_rev[:7]}...{new_rev[:7]}"
               lines.append(f"Diff: [{compare_label}]({compare_url})")
 
-            with open("pr-body.md", "w", encoding="utf-8") as md:
-              md.write("\n".join(lines) + "\n")
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"body<<__EOF__\n")
+              out.write("\n".join(lines) + "\n")
+              out.write(f"__EOF__\n")
           PY
 
       - name: Create PR
@@ -129,8 +132,8 @@ jobs:
         with:
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           commit-message: |
-            chore: update pin `${{ matrix.pin }}` (${{ needs.get-date.outputs.date }})
-          title: "chore: update pin `${{ matrix.pin }}`"
-          body-path: pr-body.md
+            chore(pin): update `${{ matrix.pin }}` (${{ needs.get-date.outputs.date }})
+          title: "chore(pin): update `${{ matrix.pin }}`"
+          body: ${{ steps.pr-body.outputs.body }}
           branch: workflow/update-pin/${{ matrix.pin }}
           delete-branch: true
