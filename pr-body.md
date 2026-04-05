@@ -1,0 +1,1 @@
+Automatic pin `niri` update.
