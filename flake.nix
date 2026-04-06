@@ -21,7 +21,6 @@
 
   outputs = inputs @ {
     nixpkgs,
-    nix-flatpak,
     ...
   }: let
     pins = import ./pins;
@@ -49,7 +48,7 @@
     in
       lib.nixosSystem {
         specialArgs = {inherit inputs pins lib' hostname;};
-        modules = [./hosts/${hostname} ./modules ./pkgs nix-flatpak.nixosModules.nix-flatpak];
+        modules = [./hosts/${hostname} ./modules ./pkgs];
       });
   };
 }

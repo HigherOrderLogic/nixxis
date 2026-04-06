@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   config,
   ...
@@ -13,6 +14,7 @@ in {
       description = "Packages to install.";
     };
   };
+  imports = [inputs.nix-flatpak.nixosModules.nix-flatpak];
   config = lib.mkIf cfg.enable {
     services.flatpak = {
       enable = true;
