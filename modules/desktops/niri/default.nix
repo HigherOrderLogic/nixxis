@@ -21,6 +21,10 @@ in {
     services.displayManager.sessionPackages = [niri];
     hj = {
       packages = lib.flatten [niri (with pkgs; [fuzzel phinger-cursors])];
+      environment.sessionVariables = {
+        ELECTRON_OZONE_PLATFORM_HINT = "auto";
+        QT_QPA_PLATFORM = "wayland";
+      };
       xdg.config.files."niri/config.kdl".source = pkgs.writeTextFile {
         name = "niri-config.kdl";
         text = let
