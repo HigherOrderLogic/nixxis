@@ -16,3 +16,6 @@ gestures {
 hotkey-overlay {
     skip-at-startup
 }
+recent-windows {
+    off
+}
