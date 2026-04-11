@@ -6,7 +6,6 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nix-darwin.follows = "";
-        smfh.follows = "";
       };
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
@@ -19,10 +18,7 @@
     };
   };
 
-  outputs = inputs @ {
-    nixpkgs,
-    ...
-  }: let
+  outputs = inputs @ {nixpkgs, ...}: let
     pins = import ./pins;
 
     inherit (nixpkgs) lib;
