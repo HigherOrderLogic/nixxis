@@ -75,7 +75,7 @@ in {
               '')
             ];
           }
-      ) {inherit (pkgs.fishPlugins) hydro pisces;})
+      ) {inherit (pkgs.fishPlugins) hydro autopair;})
     ];
   };
 }
