@@ -50,6 +50,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Install Python
+        uses: actions/setup-python@v6 
+        with:
+          python-version: '3.x'
+
       - name: Capture pin metadata
         id: pin-before
         env:
@@ -132,8 +137,8 @@ jobs:
         with:
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           commit-message: |
-            chore(pin): update `${{ matrix.pin }}` (${{ needs.get-date.outputs.date }})
-          title: "chore(pin): update `${{ matrix.pin }}`"
+            chore(pins): update `${{ matrix.pin }}` (${{ needs.get-date.outputs.date }})
+          title: "chore(pins): update `${{ matrix.pin }}`"
           body: ${{ steps.pr-body.outputs.body }}
           branch: workflow/update-pin/${{ matrix.pin }}
           delete-branch: true
