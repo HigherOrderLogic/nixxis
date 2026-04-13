@@ -14,7 +14,7 @@ in {
     enable = lib.mkEnableOption "networking";
     nameservers = lib.mkOption {
       type = lib.types.listOf (lib'.types.listOfLength lib.types.str 2);
-      default = [["1.1.1.1" "one.one.one.one"] ["1.0.0.1" "one.one.one.one"]];
+      default = [["1.1.1.1" "one.one.one.one"] ["9.9.9.9" "dns.quad9.net"]];
       description = "Set the nameservers to use.";
     };
     stevenblack = {
