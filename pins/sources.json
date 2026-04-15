@@ -20,11 +20,11 @@
         "owner": "niri-wm",
         "repo": "niri"
       },
-      "branch": "wip/branch",
+      "branch": "main",
       "submodules": false,
-      "revision": "0ca60209c54997624f1e1249f78e0437d8da1969",
-      "url": "https://github.com/niri-wm/niri/archive/0ca60209c54997624f1e1249f78e0437d8da1969.tar.gz",
-      "hash": "sha256-R3GQb8mJWZCMv2x3LKExgpjM7Kilu8dBxuUGJJjHNEM="
+      "revision": "4d214891017fa7b893df1140d24f76defba0eb88",
+      "url": "https://github.com/niri-wm/niri/archive/4d214891017fa7b893df1140d24f76defba0eb88.tar.gz",
+      "hash": "sha256-251qX0g75KcVtwCckXiOiqc+4VleJBDfiHiZ9v1c8Ro="
     },
     "nix-index-database": {
       "type": "Git",
