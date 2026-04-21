@@ -27,7 +27,7 @@
 
     hosts = lib.pipe ./hosts [builtins.readDir (lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
   in {
-    formatter = forAllSystems (system: pkgs:
+    formatter = forAllSystems (_: pkgs:
       pkgs.writeShellApplication {
         name = "aljd";
         runtimeInputs = with pkgs; [alejandra kdlfmt fd];
@@ -37,14 +37,29 @@
         '';
       });
 
-    devShells = forAllSystems (system: pkgs: {default = pkgs.callPackage ./shell.nix {};});
+    packages = forAllSystems (_: pkgs: import ./pkgs {inherit pkgs pins lib;});
+
+    devShells = forAllSystems (_: pkgs: {default = pkgs.callPackage ./shell.nix {};});
 
     nixosConfigurations = lib.genAttrs hosts (hostname: let
       lib' = import ./lib {inherit lib;};
     in
       lib.nixosSystem {
         specialArgs = {inherit inputs pins lib' hostname;};
-        modules = [./hosts/${hostname} ./modules ./pkgs];
+        modules = [
+          (args: {
+            nixpkgs.overlays = [
+              (final: _: {
+                localPackages = import ./pkgs {
+                  inherit (args) pins lib;
+                  pkgs = final;
+                };
+              })
+            ];
+          })
+          ./hosts/${hostname}
+          ./modules
+        ];
       });
   };
 }
