@@ -39,6 +39,19 @@
       "url": "https://github.com/nix-community/nix-index-database/archive/bc13aeaed568be76eab84df88ff39261bb52ff70.tar.gz",
       "hash": "sha256-89Mh4Eb/5stVJX6kGagVMijcU2FmfeD8Qv7UXc5d92o="
     },
+    "quickshell": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "quickshell-mirror",
+        "repo": "quickshell"
+      },
+      "branch": "master",
+      "submodules": false,
+      "revision": "783c953987dc56ff0601abe6845ed96f1d00495a",
+      "url": "https://github.com/quickshell-mirror/quickshell/archive/783c953987dc56ff0601abe6845ed96f1d00495a.tar.gz",
+      "hash": "sha256-lLbV66V3RMNp1l8/UelmR4YzoJ5ONtgvEtiUMJATH/o="
+    },
     "tuigreet": {
       "type": "Git",
       "repository": {
