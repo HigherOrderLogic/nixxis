@@ -28,7 +28,7 @@
 
     inherit (nixpkgs) lib;
 
-    forAllSystems = fn: lib.genAttrs lib.systems.flakeExposed (system: fn system nixpkgs.legacyPackages.${system});
+    forAllSystems = fn: lib.genAttrs (builtins.filter (lib.hasSuffix "linux") lib.systems.flakeExposed) (system: fn system nixpkgs.legacyPackages.${system});
 
     hosts = lib.pipe ./hosts [builtins.readDir (lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
   in {
