@@ -23,7 +23,10 @@ in {
         else if cfg.type == "xanmod"
         then pkgs.linuxKernel.packages.linux_xanmod_latest
         else throw "Unknown kernel type.";
-      kernel.sysctl."kernel.panic" = 5;
+      kernel.sysctl = {
+        "kernel.panic" = 5;
+        "vm.max_map_count" = 2147483642;
+      };
     };
   };
 }
