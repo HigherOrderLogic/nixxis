@@ -61,9 +61,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "71d038676c59b4a7a8fdbf9114dfd6436c093c26",
-      "url": "https://github.com/notashelf/tuigreet/archive/71d038676c59b4a7a8fdbf9114dfd6436c093c26.tar.gz",
-      "hash": "sha256-cUcrKVpRGBqm0nAV5sH+2peE/IgPzoTEF7dCwf+CtAI="
+      "revision": "5c83f3469f65a497730c181b1417770e5cb65632",
+      "url": "https://github.com/notashelf/tuigreet/archive/5c83f3469f65a497730c181b1417770e5cb65632.tar.gz",
+      "hash": "sha256-hN8CfmLXBiwOSoiJRVSIgKRkqRgpThaL98/Fm/zmnK4="
     }
   },
   "version": 7
