@@ -22,9 +22,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "4d214891017fa7b893df1140d24f76defba0eb88",
-      "url": "https://github.com/niri-wm/niri/archive/4d214891017fa7b893df1140d24f76defba0eb88.tar.gz",
-      "hash": "sha256-251qX0g75KcVtwCckXiOiqc+4VleJBDfiHiZ9v1c8Ro="
+      "revision": "8ed0da44d974c32c6877d2f4630c314da0717ecb",
+      "url": "https://github.com/niri-wm/niri/archive/8ed0da44d974c32c6877d2f4630c314da0717ecb.tar.gz",
+      "hash": "sha256-ehSMsSpE+0k8r+2Vseu8kangsYxToZv3vinynsDp9zs="
     },
     "nix-index-database": {
       "type": "Git",

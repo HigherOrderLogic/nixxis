@@ -5,6 +5,7 @@
 }:
 niri.overrideAttrs (final: prev: {
   pname = "${prev.pname}-git";
+  version = "26.04";
   src = pins.niri;
   postPatch = ''
     patchShebangs resources/niri-session
@@ -13,7 +14,7 @@ niri.overrideAttrs (final: prev: {
   '';
   cargoDeps = rustPlatform.fetchCargoVendor {
     inherit (final) src;
-    hash = "sha256-XbKhPJ/VxcLf4J2I6dekKnUvCnmoXndvQsLx2B04ihE=";
+    hash = "sha256-gfnalA3qI3a9h3PvsxgQLCrzapfjLLkxhTMJpwRh+ro=";
   };
   env =
     prev.env
