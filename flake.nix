@@ -8,7 +8,7 @@
         nix-darwin.follows = "";
       };
     };
-    nix-flatpak.url = "github:higherorderlogic/nfp";
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
       inputs = {
