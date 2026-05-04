@@ -27,6 +27,20 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v31
 
+      - name: Get Nix cache path
+        id: nix-cache-path
+        run: |
+          echo "user-nix-cache=$HOME/.cache/nix" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Nix store
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.run_id }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-${{ runner.arch }}
+          gc-max-store-size-linux: 3G
+          paths: |
+            ${{ steps.nix-cache-path.outputs.user-nix-cache }}
+
       - name: Run flake check
         run: |
           nix flake check
