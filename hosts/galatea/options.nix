@@ -9,7 +9,10 @@
         enable = true;
         wifiBackend = "iwd";
         dnsResolver = "blocky";
-        stevenblack.enable = true;
+        stevenblack = {
+          enable = true;
+          whitelistRegex = [".*\\.donmai\\.us"];
+        };
       };
       zram.enable = true;
     };

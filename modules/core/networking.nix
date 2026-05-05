@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   hostname,
   config,
   ...
@@ -9,6 +10,7 @@
   nameservers = map (n: "${n.ipv4}#${n.hostname}") cfg.nameservers;
   useResolved = cfg.dnsResolver == "resolved";
   useBlocky = cfg.dnsResolver == "blocky";
+  block = ["fakenews" "gambling" "porn"];
 in {
   options.cfg.core.networking = {
     enable = lib.mkEnableOption "networking";
@@ -55,6 +57,11 @@ in {
         default = [];
         description = "Domains to exclude from blocking.";
       };
+      whitelistRegex = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "Domains regex to exclude from blocking.";
+      };
     };
   };
   imports = [(lib.mkAliasOptionModule ["cfg" "core" "networking" "wifiBackend"] ["networking" "networkmanager" "wifi" "backend"])];
@@ -70,9 +77,9 @@ in {
         enable = true;
         dns = lib.mkIf useBlocky "none";
       };
-      stevenblack = {
+      stevenblack = lib.mkIf useResolved {
         inherit (cfg.stevenblack) enable whitelist;
-        block = ["fakenews" "gambling" "porn"];
+        inherit block;
       };
     };
     services = lib.mkMerge [
@@ -104,9 +111,27 @@ in {
               maxTime = "1h";
               prefetching = true;
             };
-            hostsFile = {
-              sources = ["/etc/hosts"];
-              loading.strategy = "fast";
+            blocking = {
+              denylists.default = lib.map (b: let
+                inherit (cfg.stevenblack) whitelist whitelistRegex;
+                hostsFile = "${lib.getOutput b pkgs.stevenblack-blocklist}/hosts";
+              in
+                if whitelist == [] && whitelistRegex == []
+                then hostsFile
+                else let
+                  escapedWhitelist = lib.map (w: "\\s" + (lib.escape ["."] w) + "$") whitelist;
+                  escapedWhitelistRegex = lib.map (r:
+                    if lib.hasPrefix "^" r
+                    then "\\s" + (lib.removePrefix "^" r)
+                    else r)
+                  whitelistRegex;
+                  pattern = lib.concatStringsSep "|" (escapedWhitelist ++ escapedWhitelistRegex);
+                in
+                  pkgs.runCommand "blocky-denylist" {} ''
+                    sed -E '/${pattern}/d' ${hostsFile} > $out
+                  '')
+              block;
+              clientGroupsBlock.default = ["default"];
             };
           };
         };
