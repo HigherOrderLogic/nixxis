@@ -57,6 +57,7 @@ in {
       };
     };
   };
+  imports = [(lib.mkAliasOptionModule ["cfg" "core" "networking" "wifiBackend"] ["networking" "networkmanager" "wifi" "backend"])];
   config = lib.mkIf cfg.enable {
     networking = {
       hostName = hostname;

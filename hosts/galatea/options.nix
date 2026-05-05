@@ -7,6 +7,7 @@
       kernel.type = "zen";
       networking = {
         enable = true;
+        wifiBackend = "iwd";
         dnsResolver = "blocky";
         stevenblack.enable = true;
       };
