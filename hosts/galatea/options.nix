@@ -7,6 +7,7 @@
       kernel.type = "zen";
       networking = {
         enable = true;
+        dnsResolver = "blocky";
         stevenblack.enable = true;
       };
       zram.enable = true;

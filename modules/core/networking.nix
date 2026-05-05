@@ -1,20 +1,51 @@
 {
   lib,
-  lib',
   hostname,
   config,
   ...
 }: let
   cfg = config.cfg.core.networking;
 
-  nameserversIp = map (n: builtins.elemAt n 0) cfg.nameservers;
-  nameservers = map (n: builtins.concatStringsSep "#" n) cfg.nameservers;
+  nameservers = map (n: "${n.ipv4}#${n.hostname}") cfg.nameservers;
+  useResolved = cfg.dnsResolver == "resolved";
+  useBlocky = cfg.dnsResolver == "blocky";
 in {
   options.cfg.core.networking = {
     enable = lib.mkEnableOption "networking";
+    dnsResolver = lib.mkOption {
+      type = lib.types.enum ["resolved" "blocky"];
+      default = "resolved";
+      description = "Set the DNS resolver to use.";
+    };
     nameservers = lib.mkOption {
-      type = lib.types.listOf (lib'.types.listOfLength lib.types.str 2);
-      default = [["1.1.1.1" "one.one.one.one"] ["9.9.9.9" "dns.quad9.net"]];
+      type = lib.types.listOf (lib.types.submodule {
+        options = {
+          ipv4 = lib.mkOption {
+            type = lib.types.str;
+            description = "Set the nameserver's IP.";
+          };
+          hostname = lib.mkOption {
+            type = lib.types.str;
+            description = "Set the nameserver's hostname";
+          };
+          httpsPath = lib.mkOption {
+            type = lib.types.str;
+            description = "Set the nameserver's HTTPS path.";
+          };
+        };
+      });
+      default = [
+        {
+          ipv4 = "1.1.1.1";
+          hostname = "one.one.one.one";
+          httpsPath = "cloudflare-dns.com/dns-query";
+        }
+        {
+          ipv4 = "9.9.9.9";
+          hostname = "dns.quad9.net";
+          httpsPath = "dns.quad9.net/dns-query";
+        }
+      ];
       description = "Set the nameservers to use.";
     };
     stevenblack = {
@@ -29,26 +60,57 @@ in {
   config = lib.mkIf cfg.enable {
     networking = {
       hostName = hostname;
-      inherit nameservers;
+      nameservers =
+        if useResolved
+        then nameservers
+        else ["127.0.0.1" "::1"];
       timeServers = lib.mkBefore ["time.cloudflare.com"];
       networkmanager = {
         enable = true;
-        insertNameservers = nameserversIp;
+        dns = lib.mkIf useBlocky "none";
       };
       stevenblack = {
         inherit (cfg.stevenblack) enable whitelist;
         block = ["fakenews" "gambling" "porn"];
       };
     };
-    services.resolved = {
-      enable = true;
-      settings.Resolve = {
-        DNSSEC = "true";
-        DNSOverTLS = "true";
-        Domains = ["~."];
-        FallbackDNS = nameservers;
-      };
-    };
+    services = lib.mkMerge [
+      (lib.mkIf useResolved {
+        resolved = {
+          enable = true;
+          settings.Resolve = {
+            DNSSEC = "true";
+            DNSOverTLS = "true";
+            Domains = ["~."];
+            FallbackDNS = nameservers;
+          };
+        };
+      })
+      (lib.mkIf useBlocky {
+        resolved.enable = false;
+        blocky = {
+          enable = true;
+          settings = {
+            dnssec.validate = true;
+            upstreams = {
+              init.strategy = "fast";
+              strategy = "strict";
+              groups.default = lib.map (n: "https://${n.httpsPath}") cfg.nameservers;
+            };
+            bootstrapDns = ["tcp+udp:1.1.1.1"];
+            caching = {
+              minTime = "1m";
+              maxTime = "1h";
+              prefetching = true;
+            };
+            hostsFile = {
+              sources = ["/etc/hosts"];
+              loading.strategy = "fast";
+            };
+          };
+        };
+      })
+    ];
     users.users.${config.cfg.core.username} = {extraGroups = ["networkmanager"];};
   };
 }
