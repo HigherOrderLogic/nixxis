@@ -8,7 +8,6 @@
       networking = {
         enable = true;
         wifiBackend = "iwd";
-        dnsResolver = "blocky";
         stevenblack = {
           enable = true;
           whitelistRegex = [".*\\.donmai\\.us"];

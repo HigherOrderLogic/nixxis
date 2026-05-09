@@ -6,19 +6,9 @@
   ...
 }: let
   cfg = config.cfg.core.networking;
-
-  nameservers = map (n: "${n.ipv4}#${n.hostname}") cfg.nameservers;
-  useResolved = cfg.dnsResolver == "resolved";
-  useBlocky = cfg.dnsResolver == "blocky";
-  block = ["fakenews" "gambling" "porn"];
 in {
   options.cfg.core.networking = {
     enable = lib.mkEnableOption "networking";
-    dnsResolver = lib.mkOption {
-      type = lib.types.enum ["resolved" "blocky"];
-      default = "resolved";
-      description = "Set the DNS resolver to use.";
-    };
     nameservers = lib.mkOption {
       type = lib.types.listOf (lib.types.submodule {
         options = {
@@ -30,9 +20,9 @@ in {
             type = lib.types.str;
             description = "Set the nameserver's hostname";
           };
-          httpsPath = lib.mkOption {
+          httpsUrl = lib.mkOption {
             type = lib.types.str;
-            description = "Set the nameserver's HTTPS path.";
+            description = "Set the nameserver's HTTPS URL.";
           };
         };
       });
@@ -40,12 +30,12 @@ in {
         {
           ipv4 = "1.1.1.1";
           hostname = "one.one.one.one";
-          httpsPath = "cloudflare-dns.com/dns-query";
+          httpsUrl = "cloudflare-dns.com/dns-query";
         }
         {
           ipv4 = "9.9.9.9";
           hostname = "dns.quad9.net";
-          httpsPath = "dns.quad9.net/dns-query";
+          httpsUrl = "dns.quad9.net/dns-query";
         }
       ];
       description = "Set the nameservers to use.";
@@ -68,75 +58,59 @@ in {
   config = lib.mkIf cfg.enable {
     networking = {
       hostName = hostname;
-      nameservers =
-        if useResolved
-        then nameservers
-        else ["127.0.0.1" "::1"];
-      timeServers = lib.mkBefore ["time.cloudflare.com"];
+      nameservers = ["127.0.0.1" "::1"];
+      timeServers = ["time.cloudflare.com"];
       networkmanager = {
         enable = true;
-        dns = lib.mkIf useBlocky "none";
-      };
-      stevenblack = lib.mkIf useResolved {
-        inherit (cfg.stevenblack) enable whitelist;
-        inherit block;
+        dns = "none";
       };
     };
-    services = lib.mkMerge [
-      (lib.mkIf useResolved {
-        resolved = {
-          enable = true;
-          settings.Resolve = {
-            DNSSEC = "true";
-            DNSOverTLS = "true";
-            Domains = ["~."];
-            FallbackDNS = nameservers;
+    services = {
+      resolved.enable = false;
+      blocky = {
+        enable = true;
+        settings = {
+          dnssec.validate = true;
+          upstreams = {
+            init.strategy = "fast";
+            strategy = "strict";
+            groups.default = lib.map (n: "https://${n.httpsUrl}") cfg.nameservers;
           };
-        };
-      })
-      (lib.mkIf useBlocky {
-        resolved.enable = false;
-        blocky = {
-          enable = true;
-          settings = {
-            dnssec.validate = true;
-            upstreams = {
-              init.strategy = "fast";
-              strategy = "strict";
-              groups.default = lib.map (n: "https://${n.httpsPath}") cfg.nameservers;
-            };
-            bootstrapDns = ["tcp+udp:1.1.1.1"];
-            caching = {
-              minTime = "1m";
-              maxTime = "1h";
-              prefetching = true;
-            };
-            blocking = {
-              denylists.default = lib.map (b: let
-                inherit (cfg.stevenblack) whitelist whitelistRegex;
-                hostsFile = "${lib.getOutput b pkgs.stevenblack-blocklist}/hosts";
+          bootstrapDns = ["tcp+udp:1.1.1.1"];
+          caching = {
+            minTime = "1m";
+            maxTime = "1h";
+            prefetching = true;
+          };
+          blocking = {
+            denylists.default = lib.map (b: let
+              inherit (cfg.stevenblack) whitelist whitelistRegex;
+              hostsFile = "${lib.getOutput b pkgs.stevenblack-blocklist}/hosts";
+            in
+              if whitelist == [] && whitelistRegex == []
+              then hostsFile
+              else let
+                escapedWhitelist = lib.map (w: "\\s" + (lib.escape ["."] w) + "$") whitelist;
+                escapedWhitelistRegex = lib.map (r:
+                  if lib.hasPrefix "^" r
+                  then "\\s" + (lib.removePrefix "^" r)
+                  else r)
+                whitelistRegex;
+                pattern = lib.concatStringsSep "|" (escapedWhitelist ++ escapedWhitelistRegex);
               in
-                if whitelist == [] && whitelistRegex == []
-                then hostsFile
-                else let
-                  escapedWhitelist = lib.map (w: "\\s" + (lib.escape ["."] w) + "$") whitelist;
-                  escapedWhitelistRegex = lib.map (r:
-                    if lib.hasPrefix "^" r
-                    then "\\s" + (lib.removePrefix "^" r)
-                    else r)
-                  whitelistRegex;
-                  pattern = lib.concatStringsSep "|" (escapedWhitelist ++ escapedWhitelistRegex);
-                in
-                  pkgs.runCommand "blocky-denylist" {} ''
-                    sed -E '/${pattern}/d' ${hostsFile} > $out
-                  '')
-              block;
-              clientGroupsBlock.default = ["default"];
-            };
+                pkgs.runCommand "blocky-denylist-${b}" {} ''
+                  sed -E '/${pattern}/d' ${hostsFile} > $out
+                '')
+            ["ads" "fakenews" "gambling" "porn"];
+            clientGroupsBlock.default = ["default"];
+          };
+          hostsFile = {
+            sources = ["/etc/hosts"];
+            loading.strategy = "fast";
           };
         };
-      })
-    ];
+      };
+    };
     users.users.${config.cfg.core.username} = {extraGroups = ["networkmanager"];};
   };
 }
