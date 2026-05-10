@@ -19,7 +19,10 @@
       niri.enable = true;
       plasma6.enable = true;
     };
-    hardware.bluetooth.enable = true;
+    hardware = {
+      bluetooth.enable = true;
+      atk-x1.enable = true;
+    };
     programs = {
       fish.enable = true;
       foot.enable = true;
