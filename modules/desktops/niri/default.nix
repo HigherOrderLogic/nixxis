@@ -8,7 +8,6 @@
 
   niri = pkgs.localPackages.niri-git;
 in {
-  imports = [./services.nix];
   options.cfg.desktops.niri = {
     enable = lib.mkEnableOption "Niri";
     extraConfig = lib.mkOption {
@@ -17,10 +16,11 @@ in {
       description = "Set extra Niri config.";
     };
   };
+  imports = [./services.nix];
   config = lib.mkIf cfg.enable {
     services.displayManager.sessionPackages = [niri];
     hj = {
-      packages = lib.flatten [niri (with pkgs; [fuzzel phinger-cursors])];
+      packages = [niri pkgs.phinger-cursors];
       environment.sessionVariables = {
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         QT_QPA_PLATFORM = "wayland";
@@ -61,6 +61,7 @@ in {
               down) down ;;
             esac
           '');
+
           spawnBindsCfg = pkgs.writeText "spawn-binds.kdl" ''
             binds {
               Mod+Return hotkey-overlay-title="Open terminal" repeat=false { spawn "foot"; }
@@ -73,7 +74,6 @@ in {
               XF86AudioMicMute allow-when-locked=true { spawn "${wpctl}" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
             }
           '';
-
           xwaylandCfg = pkgs.writeText "xwayland.kdl" ''
             xwayland-satellite {
               path "${lib.getExe pkgs.xwayland-satellite}"
