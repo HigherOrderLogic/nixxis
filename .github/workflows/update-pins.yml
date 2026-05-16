@@ -86,10 +86,8 @@ jobs:
         uses: cachix/install-nix-action@v31
 
       - name: Update pin
-        env:
-          NPINS_DIRECTORY: pins
         run: |
-          nix run --inputs-from .# nixpkgs#npins -- update ${{ matrix.pin }}
+          nix develop . -c npins update ${{ matrix.pin }}
 
       - name: Generate PR body
         id: pr-body
