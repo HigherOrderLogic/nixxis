@@ -22,6 +22,7 @@
     hardware = {
       bluetooth.enable = true;
       atk-x1.enable = true;
+      magic-trackpad-clone.enable = true;
     };
     programs = {
       fish.enable = true;
