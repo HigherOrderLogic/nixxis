@@ -1,6 +1,10 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-core = {
+      url = "github:manic-systems/nixos-core";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hjem = {
       url = "github:feel-co/hjem";
       inputs = {

@@ -3,7 +3,10 @@
   cfg = {
     core = {
       username = "kamn";
-      boot.enable = true;
+      boot = {
+        enable = true;
+        nixos-core.enable = true;
+      };
       kernel.type = "zen";
       networking = {
         enable = true;
