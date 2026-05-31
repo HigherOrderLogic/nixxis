@@ -20,14 +20,9 @@
         flake-compat.follows = "";
       };
     };
-    crane.url = "github:ipetkov/crane";
   };
 
-  outputs = inputs @ {
-    nixpkgs,
-    crane,
-    ...
-  }: let
+  outputs = inputs @ {nixpkgs, ...}: let
     pins = import ./pins;
 
     inherit (nixpkgs) lib;
@@ -47,8 +42,7 @@
       });
 
     packages = forAllSystems (_: pkgs: let
-      craneLib = crane.mkLib pkgs;
-      callPackage = lib.callPackageWith (pkgs // {inherit pins craneLib callPackage;});
+      callPackage = lib.callPackageWith (pkgs // {inherit pins callPackage;});
     in
       import ./pkgs {inherit lib callPackage;});
 
@@ -63,11 +57,10 @@
           (args: {
             nixpkgs.overlays = [
               (final: _: let
-                craneLib = args.inputs.crane.mkLib final;
                 callPackage = args.lib.callPackageWith (final
                   // {
                     inherit (args) pins;
-                    inherit craneLib callPackage;
+                    inherit callPackage;
                   });
               in {
                 localPackages = import ./pkgs {
