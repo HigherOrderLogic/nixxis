@@ -52,7 +52,7 @@
         enable = true;
         packages = ["one.ablaze.floorp"];
       };
-      greetd.enable = true;
+      ly.enable = true;
       pipewire.enable = true;
       scx.enable = true;
     };
