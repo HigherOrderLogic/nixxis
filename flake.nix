@@ -27,13 +27,16 @@
 
     inherit (nixpkgs) lib;
 
-    forAllSystems = fn: lib.genAttrs (builtins.filter (lib.hasSuffix "linux") lib.systems.flakeExposed) (system: fn system nixpkgs.legacyPackages.${system});
-
-    hosts = lib.pipe ./hosts [builtins.readDir (lib.filterAttrs (_: value: value == "directory")) builtins.attrNames];
+    forEachSystem = fn:
+      lib.genAttrs (lib.intersectLists lib.systems.doubles.linux lib.systems.flakeExposed) (system:
+        fn {
+          inherit system;
+          pkgs = nixpkgs.legacyPackages.${system};
+        });
   in {
-    formatter = forAllSystems (_: pkgs:
+    formatter = forEachSystem ({pkgs, ...}:
       pkgs.writeShellApplication {
-        name = "aljd";
+        name = "fmt";
         runtimeInputs = with pkgs; [alejandra kdlfmt fd];
         text = ''
           fd "$@" -t f -e nix -X alejandra -q '{}'
@@ -41,38 +44,43 @@
         '';
       });
 
-    packages = forAllSystems (_: pkgs: let
+    packages = forEachSystem ({pkgs, ...}: let
       callPackage = lib.callPackageWith (pkgs // {inherit pins callPackage;});
     in
       import ./pkgs {inherit lib callPackage;});
 
-    devShells = forAllSystems (_: pkgs: {default = pkgs.callPackage ./shell.nix {};});
+    devShells = forEachSystem ({pkgs, ...}: {default = pkgs.callPackage ./shell.nix {};});
 
-    nixosConfigurations = lib.genAttrs hosts (hostname: let
-      lib' = import ./lib {inherit lib;};
-    in
-      lib.nixosSystem {
-        specialArgs = {inherit inputs pins lib' hostname;};
-        modules = [
-          (args: {
-            nixpkgs.overlays = [
-              (final: _: let
-                callPackage = args.lib.callPackageWith (final
-                  // {
-                    inherit (args) pins;
+    nixosConfigurations = lib.pipe ./hosts [
+      builtins.readDir
+      (lib.filterAttrs (_: value: value == "directory"))
+      builtins.attrNames
+      (lib.flip lib.genAttrs (hostname: let
+        lib' = import ./lib {inherit lib;};
+      in
+        lib.nixosSystem {
+          specialArgs = {inherit inputs pins lib' hostname;};
+          modules = [
+            (args: {
+              nixpkgs.overlays = [
+                (final: _: let
+                  callPackage = args.lib.callPackageWith (final
+                    // {
+                      inherit (args) pins;
+                      inherit callPackage;
+                    });
+                in {
+                  localPackages = import ./pkgs {
+                    inherit (args) lib;
                     inherit callPackage;
-                  });
-              in {
-                localPackages = import ./pkgs {
-                  inherit (args) lib;
-                  inherit callPackage;
-                };
-              })
-            ];
-          })
-          ./hosts/${hostname}
-          ./modules
-        ];
-      });
+                  };
+                })
+              ];
+            })
+            ./hosts/${hostname}
+            ./modules
+          ];
+        }))
+    ];
   };
 }
