@@ -7,34 +7,53 @@
 }: let
   cfg = config.cfg.programs.helix;
 
-  helix = pkgs.localPackages.helix-git;
+  helix =
+    if cfg.steelix.enable
+    then pkgs.steelix
+    else pkgs.localPackages.helix-git;
   helixWrapped = pkgs.symlinkJoin {
     inherit (helix) meta;
     name = "${lib.getName helix}-wrapped";
     paths = [helix];
     nativeBuildInputs = [pkgs.makeBinaryWrapper];
     postBuild = ''
-      wrapProgram $out/bin/hx --prefix PATH : ${lib.makeBinPath (
-        builtins.concatLists [
-          (lib.optionals cfg.languages.nix.enable (with pkgs; [nil nixd]))
-          (lib.optional cfg.languages.rust.enable pkgs.rust-analyzer)
-          (lib.optional cfg.languages.cpp.enable (pkgs.writeShellScriptBin "clangd" ''
-            ${lib.getExe' pkgs.clang-tools "clangd"} "$@"
-          ''))
-          (lib.optionals cfg.languages.python.enable (with pkgs; [basedpyright ruff]))
-          (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
-          (lib.optional cfg.languages.typst.enable pkgs.tinymist)
-          (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
-          (lib.optional cfg.languages.yaml.enable pkgs.yaml-language-server)
-        ]
-      )}
+      wrapProgram $out/bin/hx $makeWrapperArgs
     '';
+    makeWrapperArgs =
+      [
+        "--prefix"
+        "PATH"
+        ":"
+        (lib.makeBinPath (
+          builtins.concatLists [
+            (lib.optionals cfg.languages.nix.enable (with pkgs; [nil nixd]))
+            (lib.optional cfg.languages.rust.enable pkgs.rust-analyzer)
+            (lib.optional cfg.languages.cpp.enable (pkgs.writeShellScriptBin "clangd" ''
+              ${lib.getExe' pkgs.clang-tools "clangd"} "$@"
+            ''))
+            (lib.optionals cfg.languages.python.enable (with pkgs; [basedpyright ruff]))
+            (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
+            (lib.optional cfg.languages.typst.enable pkgs.tinymist)
+            (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
+            (lib.optional cfg.languages.yaml.enable pkgs.yaml-language-server)
+          ]
+        ))
+      ]
+      ++ (lib.optionals cfg.steelix.enable ["--set-default" "STEEL_HOME" "${config.hj.xdg.config.directory}/helix/.steel"]);
   };
 
   toml = pkgs.formats.toml {};
 in {
   options.cfg.programs.helix = {
     enable = lib.mkEnableOption "helix";
+    steelix = {
+      enable = lib.mkEnableOption "steelix";
+      plugins = lib.mkOption {
+        type = lib.types.listOf lib.types.package;
+        default = [];
+        description = "Set the plugins to install.";
+      };
+    };
     defaultEditor = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -71,112 +90,138 @@ in {
       environment.sessionVariables = {
         EDITOR = lib.mkIf cfg.defaultEditor (lib.mkForce (lib.getExe helixWrapped));
       };
-      xdg.config.files = {
-        "helix/config.toml" = {
-          generator = toml.generate "helix-config.toml";
-          value = lib.mkMerge [
-            {
-              editor = lib.mkMerge [
-                {
-                  line-number = "relative";
-                  soft-wrap.enable = true;
-                  rainbow-brackets = true;
-                  cursor-shape = {
-                    insert = "bar";
-                    select = "bar";
+      xdg.config.files = lib.mkMerge [
+        {
+          "helix/config.toml" = {
+            generator = toml.generate "helix-config.toml";
+            value = lib.mkMerge [
+              {
+                editor = lib.mkMerge [
+                  {
+                    line-number = "relative";
+                    soft-wrap.enable = true;
+                    rainbow-brackets = true;
+                    cursor-shape = {
+                      insert = "bar";
+                      select = "bar";
+                    };
+                    completion-timeout = 5;
+                    completion-replace = true;
+                    lsp.display-inlay-hints = true;
+                    end-of-line-diagnostics = "hint";
+                    inline-diagnostics.cursor-line = "hint";
+                    indent-guides = {
+                      render = true;
+                      character = "╎";
+                    };
+                    statusline = {
+                      left = ["mode" "spinner"];
+                      center = ["file-name" "read-only-indicator" "file-modification-indicator"];
+                      right = ["diagnostics" "version-control" "register" "file-encoding" "position"];
+                    };
+                  }
+                  (lib.mkIf (cfg.trueColor != null) {true-color = cfg.trueColor;})
+                ];
+                keys = {
+                  insert = {
+                    C-left = "move_prev_word_start";
+                    C-right = ["move_next_word_start" "extend_char_right"];
                   };
-                  completion-timeout = 5;
-                  completion-replace = true;
-                  lsp.display-inlay-hints = true;
-                  end-of-line-diagnostics = "hint";
-                  inline-diagnostics.cursor-line = "hint";
-                  indent-guides = {
-                    render = true;
-                    character = "╎";
-                  };
-                  statusline = {
-                    left = ["mode" "spinner"];
-                    center = ["file-name" "read-only-indicator" "file-modification-indicator"];
-                    right = ["diagnostics" "version-control" "register" "file-encoding" "position"];
-                  };
-                }
-                (lib.mkIf (cfg.trueColor != null) {true-color = cfg.trueColor;})
-              ];
-              keys = {
-                insert = {
-                  C-left = "move_prev_word_start";
-                  C-right = ["move_next_word_start" "extend_char_right"];
+                  normal = lib.mkMerge [
+                    (lib.mkIf cfg.integrations.gitui.enable {
+                      C-g = [
+                        ":write-all"
+                        ":new"
+                        ":insert-output ${lib.getExe pkgs.gitui} >/dev/tty"
+                        ":buffer-close!"
+                        ":redraw"
+                        ":reload-all"
+                      ];
+                    })
+                    (lib.mkIf cfg.integrations.jjui.enable {
+                      C-j = [
+                        ":write-all"
+                        ":new"
+                        ":insert-output ${lib.getExe pkgs.jjui} >/dev/tty"
+                        ":buffer-close!"
+                        ":redraw"
+                        ":reload-all"
+                      ];
+                    })
+                  ];
                 };
-                normal = lib.mkMerge [
-                  (lib.mkIf cfg.integrations.gitui.enable {
-                    C-g = [
-                      ":write-all"
-                      ":new"
-                      ":insert-output ${lib.getExe pkgs.gitui} >/dev/tty"
-                      ":buffer-close!"
-                      ":redraw"
-                      ":reload-all"
-                    ];
+              }
+              cfg.extraConfig
+            ];
+          };
+          "helix/languages.toml" = {
+            generator = toml.generate "helix-languages-config.toml";
+            value = lib.mkMerge [
+              {
+                language = builtins.concatLists [
+                  (lib.optional cfg.languages.nix.enable {
+                    name = "nix";
+                    language-servers = ["nil" "nixd"];
                   })
-                  (lib.mkIf cfg.integrations.jjui.enable {
-                    C-j = [
-                      ":write-all"
-                      ":new"
-                      ":insert-output ${lib.getExe pkgs.jjui} >/dev/tty"
-                      ":buffer-close!"
-                      ":redraw"
-                      ":reload-all"
-                    ];
+                  (lib.optional cfg.languages.rust.enable {
+                    name = "rust";
+                    language-servers = ["rust-analyzer"];
+                  })
+                  (lib.optional cfg.languages.cpp.enable {
+                    name = "cpp";
+                    language-servers = ["clangd"];
+                  })
+                  (lib.optional cfg.languages.python.enable {
+                    name = "python";
+                    language-servers = ["basedpyright" "ruff"];
+                  })
+                  (lib.optional cfg.languages.java.enable {
+                    name = "java";
+                    language-servers = ["jdtls"];
+                  })
+                  (lib.optional cfg.languages.typst.enable {
+                    name = "typst";
+                    language-servers = ["tinymist"];
+                  })
+                  (lib.optional cfg.languages.markdown.enable {
+                    name = "markdown";
+                    language-servers = ["marksman" "harper-ls"];
+                  })
+                  (lib.optional cfg.languages.yaml.enable {
+                    name = "yaml";
+                    language-servers = ["yaml-language-server"];
                   })
                 ];
-              };
+              }
+              (lib.mkIf cfg.languages.rust.enable {language-server.rust-analyzer.config.check.command = "clippy";})
+            ];
+          };
+        }
+        (let
+          linkFilesRecursive = rootDir:
+            lib.pipe rootDir [
+              lib.filesystem.listFilesRecursive
+              (map (v:
+                lib.nameValuePair (builtins.hashString "sha256" v) {
+                  target = "helix/.steel/${lib.removePrefix rootDir v}";
+                  source = v;
+                }))
+              builtins.listToAttrs
+            ];
+          steelHome = pkgs.symlinkJoin {
+            name = "steel-home";
+            paths = cfg.steelix.plugins;
+          };
+        in
+          lib.mkIf (cfg.steelix.enable && builtins.length cfg.steelix.plugins > 0) ({
+              "helix/init.scm".text =
+                lib.concatMapStrings (p: ''
+                  (require "${lib.getName p}/${p.pluginEntrypoint}")
+                '')
+                cfg.steelix.plugins;
             }
-            cfg.extraConfig
-          ];
-        };
-        "helix/languages.toml" = {
-          generator = toml.generate "helix-languages-config.toml";
-          value = lib.mkMerge [
-            {
-              language = builtins.concatLists [
-                (lib.optional cfg.languages.nix.enable {
-                  name = "nix";
-                  language-servers = ["nil" "nixd"];
-                })
-                (lib.optional cfg.languages.rust.enable {
-                  name = "rust";
-                  language-servers = ["rust-analyzer"];
-                })
-                (lib.optional cfg.languages.cpp.enable {
-                  name = "cpp";
-                  language-servers = ["clangd"];
-                })
-                (lib.optional cfg.languages.python.enable {
-                  name = "python";
-                  language-servers = ["basedpyright" "ruff"];
-                })
-                (lib.optional cfg.languages.java.enable {
-                  name = "java";
-                  language-servers = ["jdtls"];
-                })
-                (lib.optional cfg.languages.typst.enable {
-                  name = "typst";
-                  language-servers = ["tinymist"];
-                })
-                (lib.optional cfg.languages.markdown.enable {
-                  name = "markdown";
-                  language-servers = ["marksman" "harper-ls"];
-                })
-                (lib.optional cfg.languages.yaml.enable {
-                  name = "yaml";
-                  language-servers = ["yaml-language-server"];
-                })
-              ];
-            }
-            (lib.mkIf cfg.languages.rust.enable {language-server.rust-analyzer.config.check.command = "clippy";})
-          ];
-        };
-      };
+            // linkFilesRecursive "${steelHome}/lib/steel"))
+      ];
     };
   };
 }

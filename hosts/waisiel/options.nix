@@ -1,4 +1,4 @@
-let
+{pkgs, ...}: let
   gitName = "HigherOrderLogic";
   gitEmail = "73709188+HigherOrderLogic@users.noreply.github.com";
 in {
@@ -17,6 +17,10 @@ in {
       };
       helix = {
         enable = true;
+        steelix = {
+          enable = true;
+          plugins = with pkgs.localPackages; [scooter-hx pterodactyl-hx];
+        };
         defaultEditor = true;
         trueColor = true;
         languages.java.enable = false;
