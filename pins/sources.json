@@ -51,6 +51,19 @@
       "revision": "783c953987dc56ff0601abe6845ed96f1d00495a",
       "url": "https://github.com/quickshell-mirror/quickshell/archive/783c953987dc56ff0601abe6845ed96f1d00495a.tar.gz",
       "hash": "sha256-lLbV66V3RMNp1l8/UelmR4YzoJ5ONtgvEtiUMJATH/o="
+    },
+    "scooter-hx": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "thomasschafer",
+        "repo": "scooter.hx"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "85dc36711fe4271a610ef3765fc397f1a0511d1b",
+      "url": "https://github.com/thomasschafer/scooter.hx/archive/85dc36711fe4271a610ef3765fc397f1a0511d1b.tar.gz",
+      "hash": "sha256-PYHj3KTbnASnC8O+6w1kqY/btXsbo/8eP4awaQbFBNo="
     }
   },
   "version": 8
