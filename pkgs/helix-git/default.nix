@@ -1,5 +1,7 @@
 {
   pins,
   callPackage,
-}:
-callPackage "${pins.helix}/default.nix" {}
+}: let
+  pin = pins.helix;
+in
+  callPackage "${pin}/default.nix" {gitRev = pin.revision;}
