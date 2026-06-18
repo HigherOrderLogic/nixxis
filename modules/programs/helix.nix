@@ -23,6 +23,7 @@
           ''))
           (lib.optionals cfg.languages.python.enable (with pkgs; [basedpyright ruff]))
           (lib.optional cfg.languages.java.enable pkgs.jdt-language-server)
+          (lib.optional cfg.languages.typst.enable pkgs.tinymist)
           (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
           (lib.optional cfg.languages.yaml.enable pkgs.yaml-language-server)
         ]
@@ -50,6 +51,7 @@ in {
       cpp.enable = lib'.mkEnableTrueOption "cpp";
       python.enable = lib'.mkEnableTrueOption "python";
       java.enable = lib'.mkEnableTrueOption "java";
+      typst.enable = lib'.mkEnableTrueOption "typst";
       markdown.enable = lib'.mkEnableTrueOption "markdown";
       yaml.enable = lib'.mkEnableTrueOption "yaml";
     };
@@ -153,6 +155,10 @@ in {
             (lib.optional cfg.languages.java.enable {
               name = "java";
               language-servers = ["jdtls"];
+            })
+            (lib.optional cfg.languages.typst.enable {
+              name = "typst";
+              language-servers = ["tinymist"];
             })
             (lib.optional cfg.languages.markdown.enable {
               name = "markdown";
