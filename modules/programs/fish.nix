@@ -47,6 +47,11 @@ in {
             (name: val: "alias -- ${name} ${lib.escapeShellArg (toString val)}")
             config.hjem.users.${config.cfg.core.username}.environment.shellAliases;
         };
+        "fish/conf.d/nix-your.fish".text = ''
+          if status is-interactive
+            ${lib.getExe pkgs.nix-your-shell} ${lib.getExe config.programs.fish.package} | source
+          end
+        '';
       }
       (lib.mapAttrs' (
         name: p: let
