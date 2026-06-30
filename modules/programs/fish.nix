@@ -55,29 +55,28 @@ in {
       }
       (lib.mapAttrs' (
         name: p: let
-          pluginPath = f: "${p.src}/${f}";
-          testPluginDir = d: let dirPath = pluginPath d; in (builtins.pathExists dirPath) && (lib.readFileType dirPath == "directory");
-          testPluginFile = f: let filePath = pluginPath f; in (builtins.pathExists filePath) && (lib.readFileType filePath == "regular");
+          pluginDir = f: "${p}/share/fish/vendor_${f}.d";
+          testDir = d: (builtins.pathExists d) && (lib.readFileType d == "directory");
         in
           lib.nameValuePair "fish/conf.d/plugin-${name}-${lib.getVersion p}.fish" {
             text = lib.concatStringsSep "\n" [
-              (lib.optionalString (testPluginDir "functions") ''
-                set fish_function_path $fish_function_path[1] ${pluginPath "functions"} $fish_function_path[2..]
-              '')
-              (lib.optionalString (testPluginDir "completions") ''
-                set fish_complete_path $fish_complete_path[1] ${pluginPath "completions"} $fish_complete_path[2..]
-              '')
+              (let
+                dir = pluginDir "functions";
+              in
+                lib.optionalString (testDir dir) ''
+                  set fish_function_path $fish_function_path[1] ${dir} $fish_function_path[2..]
+                '')
+              (let
+                dir = pluginDir "completions";
+              in
+                lib.optionalString (testDir dir) ''
+                  set fish_complete_path $fish_complete_path[1] ${dir} $fish_complete_path[2..]
+                '')
               ''
-                for f in ${pluginPath "conf.d"}/*.fish
+                for f in ${pluginDir "conf"}/*.fish
                   source $f
                 end
               ''
-              (lib.optionalString (testPluginFile "key_bindings.fish") ''
-                source ${pluginPath "key_bindings.fish"}
-              '')
-              (lib.optionalString (testPluginFile "init.fish") ''
-                source ${pluginPath "init.fish"}
-              '')
             ];
           }
       ) {inherit (pkgs.fishPlugins) hydro autopair;})
