@@ -39,6 +39,19 @@
       "url": "https://github.com/nix-community/nix-index-database/archive/1111b9bc836afb7e31a7014e8d1272de9b1c917d.tar.gz",
       "hash": "sha256-BQxN5UMg9FOevAsgBRwPxfxlh51Puj+dNn/8Dsi3sPM="
     },
+    "pterodactyl-hx": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "higherorderlogic",
+        "repo": "pterodactyl.hx"
+      },
+      "branch": "refactor+nix",
+      "submodules": false,
+      "revision": "922b7ddf2084bdf044e6b8b20885303a6aa875c6",
+      "url": "https://github.com/higherorderlogic/pterodactyl.hx/archive/922b7ddf2084bdf044e6b8b20885303a6aa875c6.tar.gz",
+      "hash": "sha256-gzzkP/nUDM+ZEbEoH9Qfacd/HwIAmnnLA0Y3ZbltErU="
+    },
     "quickshell": {
       "type": "Git",
       "repository": {
