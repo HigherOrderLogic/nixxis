@@ -32,10 +32,10 @@ in {
           wlCopy = lib.getExe' pkgs.wl-clipboard "wl-copy";
           cliphist = lib.getExe pkgs.cliphist;
           wpctl = lib.getExe' pkgs.wireplumber "wpctl";
-          fuzzelEmoji = lib.getExe (pkgs.writeShellScriptBin "fuzzel-emoji" ''
+          fuzzelEmoji = pkgs.writeShellScript "fuzzel-emoji" ''
             cat ${./emojis.txt} | ${fuzzel} --match-mode fzf --dmenu | cut -d ' ' -f 1 | tr -d '\n' | ${wlCopy}
-          '');
-          volumeControl = lib.getExe (pkgs.writeScriptBin "volume-control" ''
+          '';
+          volumeControl = pkgs.writeShellScript "volume-control" ''
             if [[ -n $2 ]]; then
               _sink=$2
             else
@@ -60,7 +60,7 @@ in {
               up) up ;;
               down) down ;;
             esac
-          '');
+          '';
 
           spawnBindsCfg = pkgs.writeText "spawn-binds.kdl" ''
             binds {
