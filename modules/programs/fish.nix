@@ -47,9 +47,24 @@ in {
             (name: val: "alias -- ${name} ${lib.escapeShellArg (toString val)}")
             config.hjem.users.${config.cfg.core.username}.environment.shellAliases;
         };
-        "fish/conf.d/nix-your.fish".text = ''
+        "fish/conf.d/integrations.fish".text = let
+          runFishCommand = name: script: let
+            fishScript = pkgs.writers.writeFish "${name}-script" script;
+          in
+            pkgs.runCommand name {} ''
+              ${fishScript}
+            '';
+          nixYourIntegration = runFishCommand "nix-your-integration" ''
+            ${lib.getExe pkgs.nix-your-shell} ${lib.getExe config.programs.fish.package} >> $out
+          '';
+          zoxideExe = lib.getExe pkgs.zoxide;
+          zoxideIntegration = runFishCommand "zoxide-integration" ''
+            string replace --regex -- '(?<=\s)zoxide(?=\s)' '${zoxideExe}' (${zoxideExe} init fish) >> $out
+          '';
+        in ''
           if status is-interactive
-            ${lib.getExe pkgs.nix-your-shell} ${lib.getExe config.programs.fish.package} | source
+            source ${nixYourIntegration}
+            source ${zoxideIntegration}
           end
         '';
       }
