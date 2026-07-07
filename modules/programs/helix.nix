@@ -17,7 +17,7 @@
       wrapProgram $out/bin/hx --prefix PATH : ${lib.makeBinPath (
         builtins.concatLists [
           (lib.optionals cfg.languages.nix.enable (with pkgs; [nil nixd]))
-          (lib.optionals cfg.languages.rust.enable (with pkgs; [rust-analyzer clippy]))
+          (lib.optional cfg.languages.rust.enable pkgs.rust-analyzer)
           (lib.optional cfg.languages.cpp.enable (pkgs.writeShellScriptBin "clangd" ''
             ${lib.getExe' pkgs.clang-tools "clangd"} "$@"
           ''))
@@ -134,40 +134,46 @@ in {
             cfg.extraConfig
           ];
         };
-        "helix/languages.toml".source = toml.generate "helix-languages-config.toml" {
-          language = builtins.concatLists [
-            (lib.optional cfg.languages.nix.enable {
-              name = "nix";
-              language-servers = ["nil" "nixd"];
-            })
-            (lib.optional cfg.languages.rust.enable {
-              name = "rust";
-              language-servers = ["rust-analyzer"];
-            })
-            (lib.optional cfg.languages.cpp.enable {
-              name = "cpp";
-              language-servers = ["clangd"];
-            })
-            (lib.optional cfg.languages.python.enable {
-              name = "python";
-              language-servers = ["basedpyright" "ruff"];
-            })
-            (lib.optional cfg.languages.java.enable {
-              name = "java";
-              language-servers = ["jdtls"];
-            })
-            (lib.optional cfg.languages.typst.enable {
-              name = "typst";
-              language-servers = ["tinymist"];
-            })
-            (lib.optional cfg.languages.markdown.enable {
-              name = "markdown";
-              language-servers = ["marksman" "harper-ls"];
-            })
-            (lib.optional cfg.languages.yaml.enable {
-              name = "yaml";
-              language-servers = ["yaml-language-server"];
-            })
+        "helix/languages.toml" = {
+          generator = toml.generate "helix-languages-config.toml";
+          value = lib.mkMerge [
+            {
+              language = builtins.concatLists [
+                (lib.optional cfg.languages.nix.enable {
+                  name = "nix";
+                  language-servers = ["nil" "nixd"];
+                })
+                (lib.optional cfg.languages.rust.enable {
+                  name = "rust";
+                  language-servers = ["rust-analyzer"];
+                })
+                (lib.optional cfg.languages.cpp.enable {
+                  name = "cpp";
+                  language-servers = ["clangd"];
+                })
+                (lib.optional cfg.languages.python.enable {
+                  name = "python";
+                  language-servers = ["basedpyright" "ruff"];
+                })
+                (lib.optional cfg.languages.java.enable {
+                  name = "java";
+                  language-servers = ["jdtls"];
+                })
+                (lib.optional cfg.languages.typst.enable {
+                  name = "typst";
+                  language-servers = ["tinymist"];
+                })
+                (lib.optional cfg.languages.markdown.enable {
+                  name = "markdown";
+                  language-servers = ["marksman" "harper-ls"];
+                })
+                (lib.optional cfg.languages.yaml.enable {
+                  name = "yaml";
+                  language-servers = ["yaml-language-server"];
+                })
+              ];
+            }
+            (lib.mkIf cfg.languages.rust.enable {language-server.rust-analyzer.config.check.command = "clippy";})
           ];
         };
       };
