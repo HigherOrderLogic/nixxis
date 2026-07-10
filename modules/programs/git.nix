@@ -34,6 +34,8 @@ in {
             user = {inherit (cfg) name email;};
             signing.format = "https";
             init.defaultBranch = "main";
+            push.autoSetupRemote = true;
+            merge.conflictStyle = "zdiff3";
             url = {
               "https://github.com/".insteadOf = ["gh:" "github:"];
               "https://codeberg.org/".insteadOf = ["cb:" "codeberg:"];
