@@ -31,7 +31,10 @@ in {
         warn-dirty = false;
       };
     };
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config = {
+      allowUnfree = true;
+      allowAliases = false;
+    };
     systemd.services.nix-daemon.environment.TMPDIR = "/var/tmp";
   };
 }
