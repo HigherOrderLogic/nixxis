@@ -7,10 +7,7 @@
     };
     hjem = {
       url = "github:feel-co/hjem";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nix-darwin.follows = "";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     nixos-wsl = {
