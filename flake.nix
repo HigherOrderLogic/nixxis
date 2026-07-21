@@ -34,10 +34,11 @@
     formatter = forEachSystem ({pkgs, ...}:
       pkgs.writeShellApplication {
         name = "fmt";
-        runtimeInputs = with pkgs; [alejandra kdlfmt fd];
+        runtimeInputs = with pkgs; [alejandra kdlfmt nufmt fd];
         text = ''
           fd "$@" -t f -e nix -X alejandra -q '{}'
           fd "$@" -t f -e kdl -X kdlfmt format --kdl-version v1 --log-level off '{}'
+          fd "$@" -t f -e nu -X nufmt '{}'
         '';
       });
 
