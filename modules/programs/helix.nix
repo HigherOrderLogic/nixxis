@@ -26,6 +26,7 @@
           (lib.optional cfg.languages.typst.enable pkgs.tinymist)
           (lib.optionals cfg.languages.markdown.enable (with pkgs; [marksman harper]))
           (lib.optional cfg.languages.yaml.enable pkgs.yaml-language-server)
+          (lib.optionals cfg.languages.nu.enable (with pkgs; [nushell nu-lint]))
         ]
       )}
     '';
@@ -54,6 +55,7 @@ in {
       typst.enable = lib'.mkEnableTrueOption "typst";
       markdown.enable = lib'.mkEnableTrueOption "markdown";
       yaml.enable = lib'.mkEnableTrueOption "yaml";
+      nu.enable = lib'.mkEnableTrueOption "nu";
     };
     integrations = {
       gitui.enable = lib'.mkEnableTrueOption "gitui";
@@ -170,6 +172,10 @@ in {
                 (lib.optional cfg.languages.yaml.enable {
                   name = "yaml";
                   language-servers = ["yaml-language-server"];
+                })
+                (lib.optional cfg.languages.nu.enable {
+                  name = "nu";
+                  language-servers = ["nu-lsp" "nu-lint"];
                 })
               ];
             }
