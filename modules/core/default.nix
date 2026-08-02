@@ -1,3 +1,3 @@
 {
-  imports = [./user ./boot.nix ./kernel.nix ./misc.nix ./networking.nix ./nix.nix ./zram.nix];
+  imports = [./user ./boot.nix ./kernel.nix ./misc.nix ./networking.nix ./nix.nix ./zram.nix ./zswap.nix];
 }
