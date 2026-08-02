@@ -31,13 +31,24 @@
     options = ["subvol=nix" "noatime" "compress=zstd"];
   };
 
+  fileSystems."/swap" = {
+    device = "/dev/disk/by-label/NixOS";
+    fsType = "btrfs";
+    options = ["subvol=swap" "noatime" "compress=none"];
+  };
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/ESP";
     fsType = "vfat";
     options = ["fmask=0022" "dmask=0022"];
   };
 
-  swapDevices = [];
+  swapDevices = [
+    {
+      device = "/swap/swapfile";
+      size = 16 * 1024;
+    }
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {

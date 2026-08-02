@@ -16,7 +16,10 @@
           whitelistRegex = [".*\\.donmai\\.us"];
         };
       };
-      zram.enable = true;
+      zswap = {
+        enable = true;
+        maxPoolPercent = 30;
+      };
     };
     desktops = {
       niri.enable = true;
