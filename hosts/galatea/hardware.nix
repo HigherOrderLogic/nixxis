@@ -16,13 +16,13 @@
   fileSystems."/" = {
     device = "/dev/disk/by-label/NixOS";
     fsType = "btrfs";
-    options = ["subvol=root" "compress=zstd"];
+    options = ["subvol=root" "noatime" "compress=zstd"];
   };
 
   fileSystems."/home" = {
     device = "/dev/disk/by-label/NixOS";
     fsType = "btrfs";
-    options = ["subvol=home" "compress=zstd"];
+    options = ["subvol=home" "noatime" "compress=zstd"];
   };
 
   fileSystems."/nix" = {
