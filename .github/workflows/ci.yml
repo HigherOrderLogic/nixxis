@@ -43,4 +43,4 @@ jobs:
 
       - name: Run flake check
         run: |
-          nix flake check
+          nix flake check --print-build-logs --keep-going
