@@ -1,5 +1,19 @@
 {
   "pins": {
+    "foot-inertial": {
+      "type": "Git",
+      "repository": {
+        "type": "Forgejo",
+        "server": "https://codeberg.org/",
+        "owner": "cismonx",
+        "repo": "foot"
+      },
+      "branch": "feat/inertial-scrolling",
+      "submodules": false,
+      "revision": "b15ee0497b327c85a91bab9beb46ff7446d5e9e5",
+      "url": "https://codeberg.org/cismonx/foot/archive/b15ee0497b327c85a91bab9beb46ff7446d5e9e5.tar.gz",
+      "hash": "sha256-tjtvW9QSvVlvXPTxm7OHwVNPiuTOx+jcNF5aGp539nM="
+    },
     "helix": {
       "type": "Git",
       "repository": {
