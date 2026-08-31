@@ -49,9 +49,9 @@
       },
       "branch": "main",
       "submodules": false,
-      "revision": "dbc756c9d7287de19b3e0e38c928c47510d42c3e",
-      "url": "https://github.com/nix-community/nix-index-database/archive/dbc756c9d7287de19b3e0e38c928c47510d42c3e.tar.gz",
-      "hash": "sha256-q4kR7g+pCcz6NASvoVPYu+CWWUurX03wogtBqGmR4h0="
+      "revision": "dbb978fa87faf13398e90ccbc52c343d21c7dd6d",
+      "url": "https://github.com/nix-community/nix-index-database/archive/dbb978fa87faf13398e90ccbc52c343d21c7dd6d.tar.gz",
+      "hash": "sha256-n14luQo3F/ZLfCEHk1QieiI1nGnW92ZQZeZ0UIb0UMQ="
     },
     "quickshell": {
       "type": "Git",
