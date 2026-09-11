@@ -18,14 +18,14 @@
       "type": "Git",
       "repository": {
         "type": "GitHub",
-        "owner": "helix-editor",
-        "repo": "helix"
+        "owner": "higherorderlogic",
+        "repo": "hx"
       },
       "branch": "master",
       "submodules": false,
-      "revision": "079a789e8cb08ead67f19e1971a1b7438b37354b",
-      "url": "https://github.com/helix-editor/helix/archive/079a789e8cb08ead67f19e1971a1b7438b37354b.tar.gz",
-      "hash": "sha256-IYDL6Vnf13Sa+wbeXZTAxvdLA4h8Ew5ha0spcJy/Yk0="
+      "revision": "c6c4fc435fb34565b126a675273f0c13f8b922d5",
+      "url": "https://github.com/higherorderlogic/hx/archive/c6c4fc435fb34565b126a675273f0c13f8b922d5.tar.gz",
+      "hash": "sha256-3TxPPYDt9Wut6+BmkxrVTuoNHnJ1eahqq89jFAbjfqE="
     },
     "niri": {
       "type": "Git",
