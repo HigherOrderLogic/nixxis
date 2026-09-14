@@ -6,11 +6,9 @@
     };
     system.tools.nixos-generate-config.enable = lib.mkDefault false;
     programs.command-not-found.enable = false;
-    services.journald = {
-      storage = "volatile";
-      extraConfig = ''
-        MaxRetentionSec=1day
-      '';
+    services.journald.settings.Journal = {
+      Storage = "volatile";
+      MaxRetensionSec = "1day";
     };
     documentation = {
       info.enable = false;
