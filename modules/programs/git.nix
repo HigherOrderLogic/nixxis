@@ -61,6 +61,7 @@ in {
         grb = "git rebase";
         grbi = "git rebase -i";
         grbc = "git rebase --continue";
+        grba = "git rebase --abort";
         gp = "git push";
         gpf = "git push --force-with-lease";
       };
