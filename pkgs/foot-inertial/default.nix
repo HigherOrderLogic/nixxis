@@ -11,7 +11,7 @@ foot.overrideAttrs (final: prev: {
       (fetchpatch {
         name = "intertial-scrolling-support";
         url = "https://codeberg.org/dnkl/foot/compare/${final.version}..${pins.foot-inertial.revision}.patch";
-        hash = "sha256-IUF6D5bH2kHduyoe9Z/l96qhOw7P1YHQbFGEzv9BQ78=";
+        hash = "sha256-qADEo04lqJDPUuAfnv9Km6tb/sUZTNHQ48KgdMVshq8=";
       })
     ];
 })
