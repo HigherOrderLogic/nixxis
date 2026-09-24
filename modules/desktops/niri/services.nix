@@ -38,9 +38,19 @@ in {
             Restart = "on-failure";
           };
           nm-applet = makeWantedByNiriService "Nm-applet" {
-            ExecStart= lib.getExe pkgs.networkmanagerapplet;
+            ExecStart = lib.getExe pkgs.networkmanagerapplet;
             Restart = "on-failure";
           };
+          awww-daemon = let
+            inherit (pkgs) awww;
+          in
+            lib.mkMerge [
+              (makeWantedByNiriService "Awww-daemon" {
+                ExecStart = lib.getExe' awww "awww-daemon";
+                Restart = "always";
+              })
+              {path = [awww];}
+            ];
           soteria = makeWantedByNiriService "Soteria" {
             ExecStart = lib.getExe pkgs.soteria;
             Restart = "on-failure";
