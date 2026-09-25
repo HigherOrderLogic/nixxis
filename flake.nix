@@ -19,7 +19,11 @@
     };
   };
 
-  outputs = inputs @ {nixpkgs, ...}: let
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    ...
+  }: let
     pins = import ./pins;
 
     inherit (nixpkgs) lib;
@@ -41,6 +45,21 @@
           fd "$@" -t f -e nu -X nufmt '{}'
         '';
       });
+
+    checks = forEachSystem ({
+      system,
+      pkgs,
+    }: {
+      formatter =
+        pkgs.runCommand "fmt-check" {
+          inherit self;
+          formatter = lib.getExe self.formatter.${system};
+        } ''
+          cp -r $self $out
+          $formatter . $out
+          diff -r $self $out
+        '';
+    });
 
     packages = forEachSystem ({pkgs, ...}: let
       callPackage = lib.callPackageWith (pkgs // {inherit pins callPackage;});
