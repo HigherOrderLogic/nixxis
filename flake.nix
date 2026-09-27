@@ -55,7 +55,7 @@
           inherit self;
           formatter = lib.getExe self.formatter.${system};
         } ''
-          cp -r $self $out
+          cp -r --no-preserve=all $self $out
           $formatter . $out
           diff -r $self $out
         '';
