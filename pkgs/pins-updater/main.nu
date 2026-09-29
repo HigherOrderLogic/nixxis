@@ -22,14 +22,16 @@ def "main update" [
     pin: string # The pin to update.
 ]: nothing -> nothing {
     let old_spec = pin-spec $pin
-    let repo = $old_spec | get -o repository
     let is_git = ($old_spec | get -o type) == Git
-    let is_github = $is_git and ($repo != null) and (($repo | get -o type) == GitHub)
 
     npins update $pin
 
     let default_body = $"Automatic pin `($pin)` update."
-    let body = if $is_github {
+    let body = if $is_git {
+        let repo = $old_spec | get -o repository
+        let repo_type = $repo | get -o type
+        let is_github = $is_git and ($repo_type == GitHub)
+        let is_forgejo = $is_git and ($repo_type == Forgejo)
         let old_rev = $old_spec | get -o revision
         let owner = $repo | get -o owner
         let repo_name = $repo | get -o repo
@@ -37,10 +39,17 @@ def "main update" [
         let new_rev = $new_spec | get -o revision
 
         if ($owner != null) and ($repo_name != null) and ($old_rev != null) and ($new_rev != null) and ($old_rev != $new_rev) {
+            let diff_url = if $is_forgejo {
+                let forgejo_server = $repo | get -o server
+                $"($forgejo_server)($owner)/($repo_name)/compare/($old_rev)..($new_rev)"
+            } else if $is_github {
+                $"https://github.com/($owner)/($repo_name)/compare/($old_rev)...($new_rev)"
+            } else { "#" }
+
             [
                 $default_body
                 ""
-                $"Diff: [($old_rev | str substring 0..6)...($new_rev | str substring 0..6)]\(https://github.com/($owner)/($repo_name)/compare/($old_rev)...($new_rev))"
+                $"Diff: [($old_rev | str substring 0..6)...($new_rev | str substring 0..6)]\(($diff_url))"
             ] | str join "\n"
         } else { $default_body }
     } else { $default_body }
