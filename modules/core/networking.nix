@@ -63,7 +63,10 @@ in {
       networkmanager = {
         enable = true;
         dns = "none";
-        settings.device."wifi.iwd.autoconnect" = lib.mkIf (cfg.wifiBackend == "iwd") false;
+        settings = {
+          device."wifi.iwd.autoconnect" = lib.mkIf (cfg.wifiBackend == "iwd") false;
+          connection."wifi.powersave" = 2;
+        };
       };
     };
     services = {
