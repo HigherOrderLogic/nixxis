@@ -1,0 +1,32 @@
+name: Setup Nix
+description: Install and setup Nix
+
+inputs:
+  cache:
+    required: false
+    default: false
+  cache-max-size:
+    required: false
+    default: 1G
+
+runs:
+  using: composite
+  steps:
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+
+    - name: Get Nix cache path
+      id: nix-cache-path
+      shell: bash
+      run: |
+        echo "user-nix-cache=$HOME/.cache/nix" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Nix store
+      uses: nix-community/cache-nix-action@v7
+      if: ${{ inputs.cache }}
+      with:
+        primary-key: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.workflow }}-${{ github.run_id }}
+        restore-prefixes-first-match: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.workflow }}-
+        gc-max-store-size: ${{ inputs.cache-max-size }}
+        paths: |
+          ${{ steps.nix-cache-path.outputs.user-nix-cache }}
