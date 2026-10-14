@@ -1,3 +1,3 @@
 {
-  imports = [./wsl];
+  imports = [./iso ./wsl];
 }
