@@ -23,7 +23,7 @@ runs:
 
     - name: Cache Nix store
       uses: nix-community/cache-nix-action@v7
-      if: ${{ inputs.cache }}
+      if: inputs.cache == 'true'
       with:
         primary-key: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.workflow }}-${{ github.run_id }}
         restore-prefixes-first-match: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.workflow }}-
