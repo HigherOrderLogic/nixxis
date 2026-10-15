@@ -62,9 +62,12 @@
     });
 
     packages = forEachSystem ({pkgs, ...}: let
-      callPackage = lib.callPackageWith (pkgs // {inherit pins callPackage;});
+      localPackages = let
+        callPackage = lib.callPackageWith (pkgs // {inherit pins callPackage localPackages;});
+      in
+        import ./pkgs {inherit lib callPackage;};
     in
-      import ./pkgs {inherit lib callPackage;});
+      lib.filterAttrs (_: v: lib.isDerivation v) localPackages);
 
     devShells = forEachSystem ({pkgs, ...}: {default = pkgs.callPackage ./shell.nix {};});
 
