@@ -5,6 +5,9 @@ inputs:
   cache:
     required: false
     default: false
+  cache-save:
+    required: false
+    default: true
   cache-max-size:
     required: false
     default: 1G
@@ -27,6 +30,7 @@ runs:
       with:
         primary-key: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.workflow }}-${{ github.job }}-${{ github.run_id }}
         restore-prefixes-first-match: nix-${{ runner.os }}-${{ runner.arch }}-${{ github.workflow }}-${{ github.job }}-
+        save: ${{ inputs.cache-save == 'true' }}
         gc-max-store-size: ${{ inputs.cache-max-size }}
         paths: |
           ${{ steps.nix-cache-path.outputs.user-nix-cache }}
