@@ -7,6 +7,7 @@ in {
     profiles.wsl = {
       enable = true;
       vsCodeIntegration.enable = false;
+      nvidiaSupport.enable = true;
     };
     programs = {
       fish.enable = true;
