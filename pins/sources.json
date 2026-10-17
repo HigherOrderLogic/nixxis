@@ -23,9 +23,9 @@
       },
       "branch": "master",
       "submodules": false,
-      "revision": "82ae67d183c952b6817082f5bba53e8593f2b7d4",
-      "url": "https://github.com/higherorderlogic/hx/archive/82ae67d183c952b6817082f5bba53e8593f2b7d4.tar.gz",
-      "hash": "sha256-7ppDblMzAp/BeWw/cvQeR/L0rmNBFN0DIYOqhCMxDk0="
+      "revision": "b604f02b2d4cbc25d9166a9c8e1bcc9f7edd30d9",
+      "url": "https://github.com/higherorderlogic/hx/archive/b604f02b2d4cbc25d9166a9c8e1bcc9f7edd30d9.tar.gz",
+      "hash": "sha256-3H25ZpsD2/z7uusAkCLZ2fxtvKwMrd1l2JzNRXjlZNM="
     },
     "niri": {
       "type": "Git",
