@@ -40,6 +40,19 @@
       "url": "https://github.com/niri-wm/niri/archive/11756dbfeff4ad4f999458e9be633b3a78167f1c.tar.gz",
       "hash": "sha256-3S6CZY03xFbI37MVgwVJGie2WLzl1JFTtNGoXWFAX9E="
     },
+    "nix-flatpak": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "gmodena",
+        "repo": "nix-flatpak"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "02656785ab214fa1c9655f1beaaf0269eeeec2ca",
+      "url": "https://github.com/gmodena/nix-flatpak/archive/02656785ab214fa1c9655f1beaaf0269eeeec2ca.tar.gz",
+      "hash": "sha256-f7Z4PmfnRxf7+37NN48ep+KsQauGtL5REE99pJtMNp8="
+    },
     "nix-index-database": {
       "type": "Git",
       "repository": {

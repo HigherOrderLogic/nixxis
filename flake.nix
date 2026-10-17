@@ -9,7 +9,6 @@
       url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
     nixos-wsl = {
       url = "github:nix-community/nixos-wsl";
       inputs = {
