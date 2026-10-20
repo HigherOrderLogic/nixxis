@@ -10,9 +10,9 @@
       },
       "branch": "feat/inertial-scrolling",
       "submodules": false,
-      "revision": "941a185639f602c63eb24b5f63571d6796f71a70",
-      "url": "https://codeberg.org/cismonx/foot/archive/941a185639f602c63eb24b5f63571d6796f71a70.tar.gz",
-      "hash": "sha256-NTcJZPm1N6pX1V4ygQKdCDCt1TKeaqVGp7RePBYkwOM="
+      "revision": "08d345742ceb057a80345d708ce2fd30b61da747",
+      "url": "https://codeberg.org/cismonx/foot/archive/08d345742ceb057a80345d708ce2fd30b61da747.tar.gz",
+      "hash": "sha256-OudP++TdVUyCW9y+yNxxhQCikHnkWjbxy+sEw5X98n4="
     },
     "helix": {
       "type": "Git",
