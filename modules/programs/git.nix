@@ -25,7 +25,7 @@ in {
   };
   config = lib.mkIf cfg.enable {
     hj = {
-      packages = with pkgs; [git gh codeberg-cli];
+      packages = with pkgs; [git gh];
       xdg.config.files."git/config" = {
         generator = gitIni.generate "git-config";
         value = lib.mkMerge [

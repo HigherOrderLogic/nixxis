@@ -15,7 +15,7 @@ in {
       };
       orca.enable = false;
     };
-    environment.plasma6.excludePackages = with pkgs.kdePackages; [kwin-x11 ark konsole kate ktexteditor];
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [ark konsole kate ktexteditor];
     hj.xdg.config.files."plasma-workspace/env/variables.sh".source = config.hj.environment.loadEnv;
   };
 }
