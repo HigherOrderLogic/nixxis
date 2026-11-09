@@ -10,35 +10,9 @@ in {
   options.cfg.core.networking = {
     enable = lib.mkEnableOption "networking";
     nameservers = lib.mkOption {
-      type = lib.types.listOf (lib.types.submodule {
-        options = {
-          ipv4 = lib.mkOption {
-            type = lib.types.str;
-            description = "Set the nameserver's IP.";
-          };
-          hostname = lib.mkOption {
-            type = lib.types.str;
-            description = "Set the nameserver's hostname";
-          };
-          httpsUrl = lib.mkOption {
-            type = lib.types.str;
-            description = "Set the nameserver's HTTPS URL.";
-          };
-        };
-      });
-      default = [
-        {
-          ipv4 = "1.1.1.1";
-          hostname = "one.one.one.one";
-          httpsUrl = "cloudflare-dns.com/dns-query";
-        }
-        {
-          ipv4 = "9.9.9.9";
-          hostname = "dns.quad9.net";
-          httpsUrl = "dns.quad9.net/dns-query";
-        }
-      ];
-      description = "Set the nameservers to use.";
+      type = lib.types.listOf lib.types.str;
+      default = ["cloudflare" "quad9-dnscrypt-ip4-filter-ecs-pri"];
+      description = "Upstream nameservers to use.";
     };
     stevenblack = {
       enable = lib.mkEnableOption "stevenblack blocklist";
@@ -71,28 +45,23 @@ in {
     };
     services = {
       resolved.enable = false;
-      blocky = {
+      dnscrypt-proxy = {
         enable = true;
         settings = {
-          dnssec.validate = true;
-          upstreams = {
-            init.strategy = "fast";
-            strategy = "strict";
-            groups.default = lib.map (n: "https://${n.httpsUrl}") cfg.nameservers;
-          };
-          bootstrapDns = ["tcp+udp:1.1.1.1"];
-          caching = {
-            minTime = "1m";
-            maxTime = "1h";
-            prefetching = true;
-          };
-          blocking = {
-            denylists.default = lib.map (b: let
-              inherit (cfg.stevenblack) whitelist whitelistRegex;
-              hostsFile = "${lib.getOutput b pkgs.stevenblack-blocklist}/hosts";
-            in
+          listen_addresses = ["[::]:53"];
+          server_names = cfg.nameservers;
+          http3 = true;
+          http3_probe = true;
+          dnscrypt_servers = true;
+          doh_servers = true;
+          odoh_servers = false;
+          require_dnssec = true;
+          require_nofilter = false;
+          blocked_names.blocked_names_file = lib.mkIf cfg.stevenblack.enable (let
+            inherit (cfg.stevenblack) whitelist whitelistRegex;
+            pattern =
               if whitelist == [] && whitelistRegex == []
-              then hostsFile
+              then null
               else let
                 escapedWhitelist = lib.map (w: "\\s" + (lib.escape ["."] w) + "$") whitelist;
                 escapedWhitelistRegex = lib.map (r:
@@ -100,18 +69,17 @@ in {
                   then "\\s" + (lib.removePrefix "^" r)
                   else r)
                 whitelistRegex;
-                pattern = lib.concatStringsSep "|" (escapedWhitelist ++ escapedWhitelistRegex);
               in
-                pkgs.runCommand "blocky-denylist-${b}" {} ''
-                  sed -E '/${pattern}/d' ${hostsFile} > $out
-                '')
-            ["ads" "fakenews" "gambling" "porn"];
-            clientGroupsBlock.default = ["default"];
-          };
-          hostsFile = {
-            sources = ["/etc/hosts"];
-            loading.strategy = "fast";
-          };
+                lib.concatStringsSep "|" (escapedWhitelist ++ escapedWhitelistRegex);
+            extract = "awk '$1 == \"0.0.0.0\" && $2 && $1 != $2 {print \"^\" $2 \"$\"}'";
+          in
+            pkgs.runCommand "blocked-names" {} (lib.concatMapStringsSep "\n" (b: let
+              hostsFile = "${lib.getOutput b pkgs.stevenblack-blocklist}/hosts";
+            in
+              if isNull pattern
+              then "${extract} ${hostsFile} >> $out"
+              else "sed -E '/${pattern}/d' ${hostsFile} | ${extract} >> $out")
+            ["ads" "fakenews" "gambling" "porn"]));
         };
       };
     };
