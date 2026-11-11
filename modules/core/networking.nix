@@ -71,7 +71,7 @@ in {
                 whitelistRegex;
               in
                 lib.concatStringsSep "|" (escapedWhitelist ++ escapedWhitelistRegex);
-            extract = "awk '$1 == \"0.0.0.0\" && $2 && $1 != $2 {print \"^\" $2 \"$\"}'";
+            extract = "awk '$1 == \"0.0.0.0\" && $2 && $1 != $2 { print \"=\" $2 }'";
           in
             pkgs.runCommand "blocked-names" {} (lib.concatMapStringsSep "\n" (b: let
               hostsFile = "${lib.getOutput b pkgs.stevenblack-blocklist}/hosts";
