@@ -32,3 +32,26 @@ jobs:
       - name: Run flake check
         run: |
           nix flake check --print-build-logs --keep-going
+
+  build-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
+        with:
+          cache: true
+          cache-max-size: 3G
+          cache-save: ${{ github.event_name == 'push' }}
+
+      - name: Build image
+        run: |
+          nix run .#image-builder -- build ein-sof-ohr
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: iso
+          path: result/**/*.iso
