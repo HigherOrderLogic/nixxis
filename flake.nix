@@ -2,7 +2,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-core = {
-      url = "github:manic-systems/nixos-core/fix-systemd-initrd";
+      url = "github:manic-systems/nixos-core";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hjem = {
