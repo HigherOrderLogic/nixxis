@@ -15,10 +15,10 @@ in {
     };
   };
   config = lib.mkIf cfg.enable {
-    services.scx = {
+    services.scx-loader = {
       enable = true;
-      package = pkgs.scx.rustscheds;
-      inherit (cfg) scheduler;
+      schedsPackages = [pkgs.scx.rustscheds];
+      config.default_sched = cfg.scheduler;
     };
   };
 }
