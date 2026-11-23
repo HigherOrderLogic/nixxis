@@ -54,14 +54,20 @@ in {
         ];
       };
       environment.shellAliases = {
+        ga = "git add";
         gaa = "git add --all";
         gcm = "git commit --message";
         gca = "git commit --amend";
         gcan = "git commit --amend --no-edit";
         grb = "git rebase";
-        grbi = "git rebase -i";
+        grbi = "git rebase --interactive";
         grbc = "git rebase --continue";
         grba = "git rebase --abort";
+        gst = "git stash";
+        gsts = "git stash --staged";
+        gstm = "git stash --message";
+        gstsm = "git stash --staged --message";
+        gstp = "git stash pop";
         gp = "git push";
         gpf = "git push --force-with-lease";
       };
