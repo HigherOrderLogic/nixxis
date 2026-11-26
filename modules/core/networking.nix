@@ -37,6 +37,7 @@ in {
       networkmanager = {
         enable = true;
         dns = "none";
+        wifi.macAddress = "stable-ssid";
         settings = {
           device."wifi.iwd.autoconnect" = lib.mkIf (cfg.wifiBackend == "iwd") false;
           connection."wifi.powersave" = 2;
